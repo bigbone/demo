@@ -150,7 +150,8 @@
             this.username = username;
 
             d.getElementById("showusername").innerHTML = this.username;
-            this.msgObj.style.minHeight = (this.screenheight - db.clientHeight + this.msgObj.clientHeight) + "px";
+            this.msgObj.style.minHeight = (this.screenheight - d.getElementById("onlinecount").clientHeight - 90) + "px";
+            this.msgObj.style.height = (this.screenheight - d.getElementById("onlinecount").clientHeight - 90) + "px";
             this.scrollToBottom();
 
             //告诉服务器端有用户登录
@@ -162,7 +163,6 @@
 
                 //var contentDiv = '<div>'+obj.content+'</div>';
                 //var usernameDiv = '<span>'+obj.username+'</span>';
-                console.log(obj);
                 var section = d.createElement('div');
                 if (isme) {
                     section.className = 'chatItem me';

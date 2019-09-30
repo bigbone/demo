@@ -54,22 +54,30 @@
 
 
     var startx, starty;
+    var isstart = false;
     var func = {
         'touchstart': function(e) {
+            isstart = true;
+            var event = ismoblie ? e.touches[0] : e;
             var linewidht = document.getElementById('range').value;
             ctx.lineWidth = linewidht;
             var color = document.getElementById('color').value;
             ctx.strokeStyle = color;
-            var X = e.touches[0].pageX - this.getBoundingClientRect().left;
-            var Y = e.touches[0].pageY - this.getBoundingClientRect().top;
+            var X = event.pageX - this.getBoundingClientRect().left;
+            var Y = event.pageY - this.getBoundingClientRect().top;
             ctx.beginPath();
             startx = X;
             starty = Y;
             ctx.moveTo(X, Y);
         },
         'touchmove': function(e) {
-            var X = e.touches[0].pageX - this.getBoundingClientRect().left;
-            var Y = e.touches[0].pageY - this.getBoundingClientRect().top;
+            if (!isstart) {
+                return;
+            }
+            var event = ismoblie ? e.touches[0] : e;
+
+            var X = event.pageX - this.getBoundingClientRect().left;
+            var Y = event.pageY - this.getBoundingClientRect().top;
             e.preventDefault();
             ctx.quadraticCurveTo(startx, starty, X, Y);
             //ctx.arc(startx, starty, 20, 0, Math.PI * 2)
@@ -78,6 +86,7 @@
             ctx.stroke();
         },
         'touchend': function() {
+            isstart = false;
             ctx.closePath();
             console.log(func.getCanvasData());
         },
@@ -98,9 +107,18 @@
             return (transPixels.length / (imgData.data.length / 4) * 100).toFixed(2);
         }
     };
-    canvas.addEventListener('touchstart', func.touchstart, false);
-    canvas.addEventListener('touchmove', func.touchmove, false);
-    canvas.addEventListener('touchend', func.touchend, false);
+    var ismoblie = navigator.userAgent.indexOf('android') != -1 || navigator.userAgent.indexOf('ios') != -1;
+    if (ismoblie) {
+        canvas.addEventListener('touchstart', func.touchstart, false);
+        canvas.addEventListener('touchmove', func.touchmove, false);
+        canvas.addEventListener('touchend', func.touchend, false);
+    } else {
+        canvas.addEventListener('mousedown', func.touchstart, false);
+        canvas.addEventListener('mousemove', func.touchmove, false);
+        canvas.addEventListener('mouseup', func.touchend, false);
+        canvas.addEventListener('mouseout', func.touchend, false);
+    }
+
 
     var clear = function() {
         ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
