@@ -1,0 +1,84 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="keywords" content="WEIBO">
+    <meta name="description" content="FrontEnd">
+    <meta name="apple-mobile-web-app-title" content="tmall">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,minimal-ui">
+    <meta name="format-detection" content="telephone=no">
+    <title>天猫红包</title>
+    <link href="//img.t.sinajs.cn/static/appstyle/tmall_double11/css/main.min.css?version=20181026111638" type="text/css" rel="stylesheet">
+    <style>
+        .wlayer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 999;
+        }
+    </style>
+    <script src="//js.t.sinajs.cn/t5/brandevent/static/ios.js?version=20181101143233"></script>
+</head>
+
+<body class="setpage" id="warp">
+
+    <div class="no_token">
+        <section class="main_content">
+            <div class="avatar_wrap" node-type="jump-profile" data-uid="6363396182">
+                <span class="avatar"><img src="https://tvax2.sinaimg.cn/crop.0.0.100.100.180/006WEa2ily8fwhzgghd04j302s02sjre.jpg" id="headimg" alt=""></span>
+                <span class="W_icon icon_approve_co"><em></em></span>
+            </div>
+            <div class="nickname_wrap" node-type="jump-profile" data-uid="6363396182"><span class="nickname"><em>双11爆款清单</em>的红包</span></div>
+            <div class="loading_wrap" node-type="load" style="display:none;">
+                <span class="loading_1"></span>
+                <span class="loading_2"></span>
+                <p>努力加载中···</p>
+            </div>
+            <p class="none_tip">活动已结束</p>
+            <p class="rob_btn" onclick="getImg()"><span class="HB_btn btn_1">抢红包</span></p>
+            <p class="red_rule_desc">参与抽红包的用户会关注如下账号</p>
+            <p class="red_rule_desc">@双11爆款清单 @超级品牌日 </p>
+            <p class="red_rule_desc">@天猫小黑盒 @今天有什么好黑的 <br>@尤物志</p>
+        </section>
+    </div>
+
+    <div style="display:none;" class="wlayer" id="layer">
+        <img id="test" style="width:100%;" src="">
+    </div>
+</body>
+<script src="../imgparse.js" type="text/javascript"></script>
+<script type="text/javascript" src="html2canvas.js"></script>
+<script type="text/javascript">
+    var getImg = function() {
+        var photoBox = document.getElementById('warp');
+        html2canvas(photoBox, {
+            width: '',
+            height: '',
+            scale: 3,
+            useCORS: true,
+        }).then(function(canvas) {
+            var dataUrl = canvas.toDataURL('image/jpg');
+            document.getElementById('layer').style.display = '';
+            document.getElementById('test').src = dataUrl;
+            //localStorage.imgData = dataUrl
+        })
+    }
+    var imgsrc = _WB.getImgURL('006WEa2ily8fwhzgghd04j302s02sjre', 'large');
+    var tempcanvas = document.createElement("canvas");
+    var headimg = document.getElementById('headimg');
+    tempcanvas.width = headimg.width;
+    tempcanvas.height = headimg.height;
+    var img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = function() {
+        var ctxtemp = tempcanvas.getContext("2d");
+        ctxtemp.drawImage(img, 0, 0, img.width, img.height, 0, 0, tempcanvas.width, tempcanvas.height);
+        var dataURL = tempcanvas.toDataURL("image/png");
+        headimg.src = dataURL;
+    }
+    img.src = 'http://img.t.sinajs.cn/static/appstyle/weibo_zhongce/images/_img1.png';
+</script>
+
+</html>

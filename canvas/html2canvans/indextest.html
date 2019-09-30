@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link href="index.css" rel="stylesheet">
+    <script>
+        document.getElementsByTagName('html')[0].style.fontSize = Math.min(document.getElementsByTagName('html')[0].clientWidth, 750) / 750 * 100 + 'px'
+        window.addEventListener('resize', function() {
+            document.getElementsByTagName('html')[0].style.fontSize = Math.min(document.getElementsByTagName('html')[0].clientWidth, 750) / 750 * 100 + 'px'
+        })
+    </script>
+</head>
+
+<body>
+
+    <div id="app">
+        <div class="index-container"><label class="upload-btn">开始上传或拍照
+    <input type="file" value="" accept="image/*" id="image-input"></label>
+            <div class="photo-box">
+                <div class="preview-box">
+                    <img src="" id="preview-img">
+                </div>
+                <img src="temp1.png" id="preview-bg">
+            </div>
+            <div class="photo-ul">
+                <img src="temp1.png" class="select-img">
+                <img src="temp2.png" class="">
+                <img src="temp3.png" class="">
+            </div>
+            <div class="composite-btn">合成图片</div>
+            <p id="test1"></p>
+        </div>
+    </div>
+
+    <img src="" id="test">
+    <script type="text/javascript" src="exif.js"></script>
+    <script type="text/javascript" src="//js.t.sinajs.cn/t5/brandevent/js/dest/tools/lrz.js"></script>
+    <script type="text/javascript" src="html2canvas.js"></script>
+    <script type="text/javascript" src="indextest.js"></script>
+    <script>
+        window.SUDA = window.SUDA || [];
+        //版本区分设置扩展信息。
+
+        window.SUDA.push(["setGatherInfo", null, 'huodong_h5']);
+        window.SUDA.push(["setGatherInfo", null, 'huodong_h5222']);
+        var doc = document;
+        var wa = doc.createElement('script');
+        var es = doc.getElementsByTagName('script')[0];
+        wa.type = 'text/javascript';
+        wa.charset = 'utf-8';
+        wa.async = true;
+        var date = new Date();
+        var verson = window.$config && $config['version'] ? $config['version'] : date.getUTCFullYear() + "" + date.getUTCMonth() + date.getUTCDay();
+        var href = ('https:' == doc.location.protocol ? 'https://' : 'http://') + 'js.t.sinajs.cn/open/analytics/js/suda.js?version=' + verson;
+        wa.src = href;
+        es.parentNode.insertBefore(wa, es);
+    </script>
+</body>

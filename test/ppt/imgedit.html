@@ -1,0 +1,161 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div style="margin-top:100px;">
+        <canvas width="512px" height="683px" id="can"></canvas>
+    </div>
+    <div>
+        <input type="button" value="反色" onclick="back()">
+        <input type="button" value="灰色调" onclick="black()">
+        <input type="button" value="打码" onclick="blurimg()">
+    </div>
+</body>
+<script type="text/javascript">
+    var img = new Image();
+    var canvas = document.getElementById('can');
+    var ctx = canvas.getContext("2d");
+    var quan = 3; //马赛克的大小
+    var num = 9; //一次操作包含马赛克的个数
+    img.onload = function() {
+        drawimg();
+    }
+    img.src = 'mm.jpg';
+
+    var clear = function() {
+        ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    }
+    var drawimg = function() {
+            ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, canvas.width, canvas.height);
+        }
+        //反色
+    function back() {
+        clear();
+        drawimg();
+        var imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var data = imgdata.data;
+        for (var i = 0; i < data.length; i = i + 4) {
+            var r = data[i];
+            var g = data[i + 1];
+            var b = data[i + 2];
+            var alpha = data[i + 3];
+            newr = 255 - r;
+            newg = 255 - g;
+            newb = 255 - b;
+            data[i] = newr;
+            data[i + 1] = newg;
+            data[i + 2] = newb;
+        }
+        ctx.putImageData(imgdata, 0, 0);
+    }
+
+    function black() {
+        clear();
+        drawimg();
+        var imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var data = imgdata.data;
+        for (var i = 0; i < data.length; i = i + 4) {
+            var r = data[i];
+            var g = data[i + 1];
+            var b = data[i + 2];
+            var alpha = data[i + 3];
+            newr = (r * 0.272) + (g * 0.534) + (b * 0.131);
+            newg = (r * 0.349) + (g * 0.686) + (b * 0.168);
+            newb = (r * 0.393) + (g * 0.769) + (b * 0.189);
+            data[i] = newr;
+            data[i + 1] = newg;
+            data[i + 2] = newb;
+        }
+        ctx.putImageData(imgdata, 0, 0);
+    }
+
+    function blurimg() {
+        clear();
+        drawimg();
+
+        canvas.onmousedown = function(ev) {
+            var ev = ev || window.event;
+            var dx = ev.clientX - canvas.offsetLeft;
+            var dy = ev.clientY - canvas.offsetTop;
+            drawLine(dx, dy); //开始画马塞克
+            document.onmousemove = function(ev) {
+                var ev = ev || window.event;
+                var mx = ev.clientX - canvas.offsetLeft;
+                var my = ev.clientY - canvas.offsetTop;
+                //当拖拽的距离超过马赛克的直径再画下一个马赛克
+                if (Math.pow(dx - mx, 2) + Math.pow(dy - my, 2) >= Math.pow(quan * num, 2)) { //
+                    drawLine(mx, my);
+                    dx = mx;
+                    dy = my;
+                }
+            };
+            document.onmouseup = function() {
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
+        }
+    }
+
+    function drawLine(dx, dy) {
+        //原始图像
+        var originalImgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var originalPxData = originalImgData.data;
+
+        //用于循环修改  
+        var modifyImgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var modifyPxData = modifyImgData.data;
+        for (var i = dx - quan * num; i < dx + quan * num; i = i + 2 * quan + 1) {
+            for (var j = dy - quan * num; j < dy + quan * num; j = j + 2 * quan + 1) {
+                //中心点(dx,dy)
+                // if(Math.pow(i-dx,2)+Math.pow(j-dy,2) <= Math.pow(quan*num/2,2)){
+                if (!((i == dx - quan * num && j == dy - quan * num) || (i == dx - quan * num && j == dy - quan * num + 2 * quan + 1) ||
+                        (i == dx - quan * num && j == dy - quan * num + 4 * quan + 2) || (i == dx - quan * num && j == dy - quan * num + 12 * quan + 6) ||
+                        (i == dx - quan * num && j == dy - quan * num + 14 * quan + 7) || (i == dx - quan * num && j == dy - quan * num + 16 * quan + 8) ||
+                        (i == dx - quan * num + 16 * quan + 8 && j == dy - quan * num) || (i == dx - quan * num + 16 * quan + 8 && j == dy - quan * num + 2 * quan + 1) ||
+                        (i == dx - quan * num + 16 * quan + 8 && j == dy - quan * num + 4 * quan + 2) || (i == dx - quan * num + 16 * quan + 8 && j == dy - quan * num + 12 * quan + 6) ||
+                        (i == dx - quan * num + 16 * quan + 8 && j == dy - quan * num + 14 * quan + 7) || (i == dx - quan * num + 16 * quan + 8 && j == dy - quan * num + 16 * quan + 8) ||
+                        (i == dx - quan * num + 2 * quan + 1 && j == dy - quan * num) || (i == dx - quan * num + 4 * quan + 2 && j == dy - quan * num) ||
+                        (i == dx - quan * num + 12 * quan + 6 && j == dy - quan * num) || (i == dx - quan * num + 14 * quan + 7 && j == dy - quan * num) ||
+                        (i == dx - quan * num + 2 * quan + 1 && j == dy - quan * num + 16 * quan + 8) || (i == dx - quan * num + 4 * quan + 2 && j == dy - quan * num + 16 * quan + 8) ||
+                        (i == dx - quan * num + 12 * quan + 6 && j == dy - quan * num + 16 * quan + 8) || (i == dx - quan * num + 14 * quan + 7 && j == dy - quan * num + 16 * quan + 8))) {
+                    var sumR = 0;
+                    var sumG = 0;
+                    var sumB = 0;
+                    //找他周围的元素 
+                    for (var x = -quan; x <= quan; x++) {
+                        for (var y = -quan; y <= quan; y++) {
+                            var xx = i + x;
+                            var yy = j + y;
+                            var pp = yy * canvas.width + xx; //周围的元素。  
+                            sumR += originalPxData[pp * 4 + 0];
+                            sumG += originalPxData[pp * 4 + 1];
+                            sumB += originalPxData[pp * 4 + 2];
+                        }
+                    }
+
+                    var totlal = (2 * quan + 1) * (2 * quan + 1);
+                    var avgR = sumR / totlal;
+                    var avgG = sumG / totlal;
+                    var avgB = sumB / totlal;
+
+                    for (var x = -quan; x <= quan; x++) {
+                        for (var y = -quan; y <= quan; y++) {
+                            var xx = i + x;
+                            var yy = j + y;
+                            var pp = yy * canvas.width + xx; //周围的元素。  
+                            modifyPxData[pp * 4 + 0] = avgR;
+                            modifyPxData[pp * 4 + 1] = avgG;
+                            modifyPxData[pp * 4 + 2] = avgB;
+                        }
+                    }
+                }
+            }
+        }
+        ctx.putImageData(modifyImgData, 0, 0, 0, 0, canvas.width, canvas.height);
+    }
+</script>
+
+</html>

@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div>
+        <canvas width="300px" height="300px" id="canvas"></canvas>
+        <img src="" id="imgend" />
+        <img src="" id="create" />
+        <div id="result"></div>
+    </div>
+    <input type="file" id="upload" />
+
+    <video id="testvideo"></video>
+</body>
+<script src="imgparse.js" type="text/javascript"></script>
+<script>
+    // 1.跨域：感觉代码量更多，还不如动态创建一个crossOrigin = 'Anonymous'的img标签。
+    //这个也要设置跨域访问。
+    //2.隐藏视频的实际地址，感觉就只能过滤一部分用户，抓包抓一下就ok。除非每次对xhr做请求发送。页面一进来就出参数。用完就失效参数。
+    //3.可能用户分段加载视频,
+    //MediaSource 手机的兼容性不是特别好。
+    var xhr = new XMLHttpRequest();
+
+    /*var imgsrc = 'https://tvax4.sinaimg.cn/crop.0.0.512.512.180/6f3d7819ly8fx9t41s1w7j20e80e8wf9.jpg';*/
+
+    var imgsrc = _WB.getImgURL('6f3d7819ly8fx9t41s1w7j20e80e8wf9', 'large');
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    xhr.onload = function() {
+        var result = this.response;
+        var descarr = [];
+        descarr.push('文件大小:' + result.size);
+        descarr.push('文件类型:' + result.type);
+        var url = URL.createObjectURL(this.response);
+        document.getElementById('create').src = url;
+        descarr.push('当前页面的地址:' + url);
+        var img = new Image();
+        img.onload = function() {
+            // 此时你就可以使用canvas对img为所欲为了
+            ctx.drawImage(img, 0, 0, 600, 600, 0, 0, 300, 300);
+            try {
+                var imgbase64 = canvas.toDataURL('image/png');
+                //console.log(imgbase64);
+                document.getElementById('imgend').src = imgbase64;
+            } catch (e) {
+                console.log(e);
+            }
+            // 图片用完后记得释放内存
+            URL.revokeObjectURL(url);
+            document.getElementById('result').innerHTML = descarr.join('<br>');
+        };
+        img.src = url;
+    };
+    xhr.open('GET', imgsrc, true);
+    xhr.responseType = 'blob';
+    xhr.send();
+
+    function upload(blobOrFile) {
+        /*var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/server', true);
+        xhr.onload = function(e) {
+            alert(e);
+        };
+        xhr.send(blobOrFile);*/
+        console.log(blobOrFile);
+    }
+    var uploadfile = document.getElementById('upload');
+    uploadfile.addEventListener('change', function() {
+        var blob = this.files[0];
+
+        const BYTES_PER_CHUNK = 1024 * 10; // 1MB chunk sizes.
+        const SIZE = blob.size;
+
+        var start = 0;
+        var end = BYTES_PER_CHUNK;
+        //分片上传文件
+        while (start < SIZE) {
+            upload(blob.slice(start, end));
+            start = end;
+            end = start + BYTES_PER_CHUNK;
+        }
+    }, false);
+
+
+
+    //var videosrc = 'http://img.t.sinajs.cn/static/appstyle/wb_travelend/images/travelvideo.mp4?version=20190212181303';
+
+    var videosrc = 'http://nickdesaulniers.github.io/netfix/demo/frag_bunny.mp4';
+    var video = document.getElementById('testvideo');
+
+    // Need to be specific for Blink regarding codecs
+    // ./mp4info frag_bunny.mp4 | grep Codec
+
+    var mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
+
+    if ('MediaSource' in window && MediaSource.isTypeSupported(mimeCodec)) {
+        var mediaSource = new MediaSource();
+        //console.log(mediaSource.readyState); // closed
+        video.src = URL.createObjectURL(mediaSource);
+        mediaSource.addEventListener('sourceopen', sourceOpen);
+    } else {
+        //console.error('Unsupported MIME type or codec: ', mimeCodec);
+        var xhrvideo = new XMLHttpRequest();
+        xhrvideo.onload = function() {
+            var result = this.response;
+            alert(URL.createObjectURL(result))
+            video.src = URL.createObjectURL(result);
+        };
+        xhrvideo.open('GET', videosrc, true);
+        xhrvideo.responseType = 'blob';
+        xhrvideo.send();
+    }
+
+
+    function sourceOpen(_) {
+        //console.log(this.readyState); // open
+        var mediaSource = this;
+        var sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
+        var xhrvideo = new XMLHttpRequest();
+        xhrvideo.onload = function() {
+            var result = this.response;
+            sourceBuffer.addEventListener('updateend', function(_) {
+                mediaSource.endOfStream();
+                video.play();
+                //console.log(mediaSource.readyState); // ended
+            });
+            sourceBuffer.appendBuffer(result);
+        };
+        xhrvideo.open('GET', videosrc, true);
+        xhrvideo.responseType = 'arraybuffer';
+        xhrvideo.send();
+    }
+    document.addEventListener('click', function() {
+        video.play();
+    }, false);
+</script>
+
+</html>

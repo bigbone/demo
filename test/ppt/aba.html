@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div>
+        <h3>跨域（同源策略）</h3>
+        <h4>跨域</h4>
+        <p>huodong.weibo.com 和 weibo.com</p>
+        <p>huodong.weibo.com 和 huodong.weibo.com:8989</p>
+        <p>https://huodong.weibo.com 和 http://huodong.weibo.com</p>
+        <h4>不跨域</h4>
+        <p>https://huodong.weibo.com 和 https://huodong.weibo.com</p>
+        <p><input type="button" value="call ifrmeb" onclick="calliframe()"></p>
+    </div>
+    <iframe src="iframeb.html" name="iframeb"></iframe>
+    <script type="text/javascript">
+        function testcallback() {
+            console.log('testcallback');
+        }
+
+        function calliframe() {
+            frames['iframeb'].window.test();
+        }
+    </script>
+
+    <h3><a href="http://demo.weibo.com/test/weibo/upload.html">上传图片的流程</a></h3>
+    <h3>jsonp</h3>
+    <iframe src="iframejsonp.html" name="iframeb"></iframe>
+
+    <h3><a href="http://www.ruanyifeng.com/blog/2016/04/cors.html">CROS</a></h3>
+    <p>简单请求</p>
+    <p>xhr.withCredentials = true</p>
+    <p>Access-Control-Allow-Credentials</p>
+    <p>localstorage 同域跨标签通讯（window.addEventListener('storage', (e) => console.log(e)) ）/localStorage.setItem('weibo', '1')
+    </p>
+    <p>websocket/长轮询</p>
+
+</body>
+
+</html>

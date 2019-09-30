@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Vue.js tree view example</title>
+    <style>
+        body {
+            font-family: Menlo, Consolas, monospace;
+            color: #444;
+        }
+        
+        .tab {
+            display: flex;
+        }
+        
+        .tab div {
+            padding: 0 10px;
+        }
+        
+        .cur {
+            box-shadow: 2px 2px 1px 2px #cccccc;
+        }
+        
+        .component-fade-enter-active,
+        .component-fade-leave-active {
+            transition: opacity .3s ease;
+        }
+        
+        .component-fade-enter,
+        .component-fade-leave-to
+        /* .component-fade-leave-active for below version 2.1.8 */
+        
+        {
+            opacity: 0;
+        }
+        
+        .outer {
+            padding-top: 20px;
+        }
+        
+        .list-complete-item {
+            transition: all 1s;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .list-complete-enter,
+        .list-complete-leave-to
+        /* .list-complete-leave-active for below version 2.1.8 */
+        
+        {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .list-complete-leave-active {
+            position: absolute;
+        }
+    </style>
+    <!-- Delete ".min" for console warnings in development -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+    <script type="text/x-template" id="child-template">
+        <div>
+            <div>{{name}}</div>
+            <button @click="changeName">Change Name</button>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="child-template">
+        <div>
+            <div>{{name}}</div>
+            <button @click="changeName">Change Name</button>
+        </div>
+    </script>
+
+    <div id="app">
+        <div class="tab">
+            <div @click="com='child'" :class="{ cur: com=='child' }">组件一</div>
+            <div @click="com='child2'" :class="{ cur : com=='child2' }">组件二</div>
+        </div>
+        <div class="outer">
+            <transition name="component-fade" mode="out-in">
+                <component v-bind:is="com"></component>
+            </transition>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
+
+    <p>多个元素的节点</p>
+    <div id="list-complete-demo" class="demo">
+        <button v-on:click="shuffle">Shuffle</button>
+        <button v-on:click="add">Add</button>
+        <button v-on:click="remove">Remove</button>
+        <transition-group name="list-complete" tag="p">
+            <span v-for="item in items" v-bind:key="item" class="list-complete-item">
+      {{ item }}
+    </span>
+        </transition-group>
+    </div>
+</body>
+<script>
+    Vue.component('child', {
+        'template': '#child-template',
+        data() {
+            return {
+                'name': 'child1'
+            }
+        },
+        methods: {
+            changeName() {
+                this.name = '333';
+            }
+        }
+    });
+
+
+    Vue.component('child2', {
+        'template': '#child-template',
+        data() {
+            return {
+                'name': 'child2'
+            }
+        },
+        methods: {
+            changeName() {
+                this.name = '333';
+            }
+        }
+    });
+
+    var demo = new Vue({
+        el: '#app',
+        data() {
+            return {
+                com: 'child',
+            };
+        },
+        methods: {
+            changeChildName(v) {
+                this.com = v;
+            },
+        }
+    });
+</script>
+
+<script>
+    new Vue({
+        el: '#list-complete-demo',
+        data: {
+            items: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            nextNum: 10
+        },
+        methods: {
+            randomIndex: function() {
+                return Math.floor(Math.random() * this.items.length)
+            },
+            add: function() {
+                this.items.splice(this.randomIndex(), 0, this.nextNum++)
+            },
+            remove: function() {
+                this.items.splice(this.randomIndex(), 1)
+            },
+            shuffle: function() {
+                this.items = _.shuffle(this.items)
+            }
+        }
+    })
+</script>
+
+</html>

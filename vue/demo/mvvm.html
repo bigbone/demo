@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Vue.js github commits example</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div id="demo">
+        <input type="" v-model="str">
+        <p>{{time|formatDate}}</p>
+        <p>{{output}}</p>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script>
+    var demo = new Vue({
+        el: '#demo',
+        'templete': 'view-template',
+        'data': {
+            str: '111',
+            'output': '1',
+            time: new Date()
+        },
+        filters: {
+            formatDate: function(date) {
+                var YMDHMS = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+                return YMDHMS;
+            }
+        },
+        created: function() {
+            this.fetchData();
+            setInterval(this.setTime, 1000);
+        },
+
+        watch: {
+            str: 'fetchData'
+        },
+
+        methods: {
+            fetchData: function() {
+                this.output = this.str + (~this.time);
+            },
+            setTime: function() {
+                this.time = new Date();
+            }
+        }
+    });
+</script>
+
+</html>

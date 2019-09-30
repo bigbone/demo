@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Vue.js tree view example</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+
+    <!-- item template -->
+    <script type="text/x-template" id="child-template">
+        <div>
+            <div>{{name}}</div>
+            <button @click="changeName">Change Name</button>
+        </div>
+    </script>
+
+    <div id="app">
+        <h1>Props Parent</h1>
+        <p>{{childName}}</p>
+        <child :name="childName" :changeName="changeChildName" />
+    </div>
+</body>
+<script>
+    Vue.component('child', {
+        'template': '#child-template',
+        props: ['name', 'changeName'],
+        methods: {
+            changeName() {
+                this.name = '333';
+            }
+        }
+    });
+
+    var demo = new Vue({
+        el: '#app',
+        data() {
+            return {
+                childName: 'child name is what?',
+            };
+        },
+        methods: {
+            changeChildName() {
+                this.childName = 'no name';
+            },
+        }
+    });
+</script>

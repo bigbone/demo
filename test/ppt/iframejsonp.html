@@ -1,0 +1,36 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <p>jsonp</p>
+    <input type="button" onclick="jsonp()" value="jsonp">
+    <script>
+        var callback = function(json) {
+            console.log(json);
+        }
+
+        function jsonp() {
+            var unionkey = +new Date() + parseInt(Math.random() * 100);
+            var key = 'aaa_' + unionkey;
+            var url = 'https://rm.api.weibo.com/2/remind/push_count.json?trim_null=1&with_dm_group=true&with_settings=1&exclude_attitude=1&with_common_cmt=1&with_comment_attitude=1&with_common_attitude=1&with_moments=1&with_dm_unread=1&msgbox=true&with_page_group=1&with_chat_group=1&with_chat_group_notice=1&_pid=1&count=2&source=351354573&status_type=0&callback=';
+            url = url + key;
+            window[key] = callback;
+            var sc = document.createElement('script');
+            var requestTimeout = setTimeout(function() {
+                window['aaa_' + unionkey] = null;
+                alert('超时');
+            }, 3000);
+            sc.setAttribute('src', url);
+            sc.onload = function() {
+                try {
+                    clearTimeout(requestTimeout);
+                    //删除sc
+                } catch (exp) {}
+            }
+            document.getElementsByTagName("head")[0].appendChild(sc);
+        }
+    </script>
+</body>

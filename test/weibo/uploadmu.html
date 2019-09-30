@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>上传图片</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <style>
+        #lists img {
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <form action="https://picupload.weibo.com/interface/pic_upload.php?mime=image%2Fjpeg&url=0&markpos=1&logo=&nick=0&marks=0&app=miniblog&s=rdxt&pri=null&file_source=1&cb=https%3A%2F%2Fdemo.weibo.com%2Ftest%2Fweibo%2Fuploadback.html%3Fcallback%3Dcallback"
+            enctype="multipart/form-data" method="POST" id="from1" target="uploadiframe">
+            <input type="file" name="pic1" id="test" multiple="multiple">
+            <input type="button" value="上传" id="upload">
+        </form>
+    </div>
+</body>
+<script src="../../canvas/imgparse.js"></script>
+<script src="../../canvas/jquery.js"></script>
+
+<script>
+    var count_noflash = 0;
+    $('#test').on('change', function() {
+        var files = document.getElementById('test').files;
+        var length = files.length;
+        for (var i = 0; i < length; i++) {
+            var file = files[i];
+            if (file && file.size && file.size >= 20 * 1024 * 1024) {
+                // 限制20兆以上的图片上传，并且弹层弹出一次
+                alert('图片过大，请上传小于20M的图片');
+                return;
+            }
+
+            if (typeof file != 'object' && !file.type) {
+                return;
+            }
+
+            if (count_noflash + 1 > 9) return;
+            count_noflash = count_noflash + 1;
+
+            if (file.type && file.type.indexOf('image') >= 0) {
+                var reader = new FileReader();
+                var fileName = file.name;
+
+                reader.onloadend = function(e) {
+                    var base64 = e.target.result.split(',')[1];
+                    upload(base64, callback, uploadError, 5000, fileName);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    });
+
+    var uploadError = function() {
+        count_noflash--;
+    }
+
+    var upload = function(imgData, succback, errorback, delay, fileName) {
+        if (!imgData) {
+            return;
+        }
+        var ABAURL = document.location.protocol + '//' + document.domain + '/test/weibo/uploadback.html?_wv=5';
+        var UPLOADURL = "http://picupload.service.weibo.com/interface/pic_upload.php?";
+        if (document.location.protocol == 'https:') {
+            UPLOADURL = 'https://picupload.weibo.com/interface/pic_upload.php?';
+        }
+        if (document.domain.indexOf('weibo.cn') != -1) {
+            if (document.location.protocol == 'https:') {
+                UPLOADURL = 'https://unistore.weibo.cn/interface/pic_upload.php?'
+            } else {
+                UPLOADURL = 'http://unistore.weibo.cn/interface/pic_upload.php?'
+            }
+        }
+        var form = document.createElement('form');
+        var input = document.createElement('textarea');
+        form.style.display = 'none';
+        form.method = 'post';
+        input.name = 'b64_data';
+        input.value = imgData;
+        document.body.appendChild(form);
+        form.appendChild(input);
+        //aba方式
+        abafunc(form, ABAURL, UPLOADURL, function(info) {
+            succback && succback(info);
+            input = form = null;
+        }, function() {
+            errorback && errorback();
+            input = form = null;
+        }, delay || 30000, true);
+    }
+
+    var abafunc = function(form, abaurl, fromurl, callback, errorback, timeout, isbase64) {
+        timeout = timeout || 30000;
+        var ABAID = ~(new Date()) + parseInt(Math.random() * 10);
+
+        var callbackName = "__callack" + ABAID;
+
+        var ifr = document.createElement('iframe');
+        ifr.style.display = 'none';
+        ifr.setAttribute("name", callbackName);
+
+        window[callbackName] = function(info) {
+            clearTimeout(abortTimeout);
+            $(ifr).remove();
+            $(form).remove();
+            callback(info);
+            delete window[callbackName];
+        };
+        document.body.appendChild(ifr);
+        fromurl = fromurl + "cb=" + encodeURIComponent(abaurl + "&callback=" + callbackName) + "&marks=1&app=miniblog&s=rdxt";
+        if (isbase64) {
+            fromurl = fromurl + "&data=base64&mime=image%2Fjpeg&url=0";
+        }
+        form.action = fromurl;
+        form.target = callbackName;
+        form.submit();
+
+        var abortTimeout = setTimeout(function() {
+            clearTimeout(abortTimeout);
+            $(ifr).remove();
+            $(form).remove();
+            delete window[callbackName];
+            errorback && errorback();
+        }, timeout);
+    }
+    var callback = function(info) {
+        count_noflash--;
+        if (info.ret == 1) {
+            var pid = info.pid;
+            //document.getElementById('pidresult').innerHTML = pid;
+            //document.getElementById('from1').reset();
+            var imgdom = '<dl><img src="' + _WB.getImgURL(pid, 'large', 1) + '"><span>' + pid + '</span></dl>';
+            $('#lists').append(imgdom);
+        } else {
+            var codeList = {
+                '-1': '没有登录weibo.com',
+                '-2': '没有收到PUT的数据',
+                '-3': '没有指定cb参数',
+                '-4': '没有发现提交上传文件',
+                '-5': '该app没有开放图片上传服务',
+                '-6': 'SINAPRO或uid非法',
+                '-7': '参数s值不被支持',
+                '-8': '数据上传失败',
+                '-9': '文件mime类型不支持',
+                '-10': '文件字节数超限',
+                '-11': '存储错误'
+            }
+            alert(codeList[info.ret]);
+            if (info.ret == -1) {
+                window.open('https://weibo.com');
+            }
+
+        }
+
+    }
+</script>
+<div>
+    <div id="lists"></div>
+</div>
+
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-title" content="">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <link rel=stylesheet href="../../common/reset.css"></link>
+
+    <style>
+        article h4,
+        h4 {
+            position: sticky;
+            position: -webkit-sticky;
+            top: -1px;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            z-index: 1;
+        }
+        
+        content {
+            position: relative;
+        }
+        
+        footer {
+            position: sticky;
+            position: -webkit-sticky;
+            /*bottom: 5px;*/
+            z-index: -1;
+            background-color: #cd0000;
+            color: #fff;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <article>
+        <section>
+            <h4 class="title">网曝王宝强殴打马蓉</h4>
+            <content>
+                <p>12月2日，有网友爆料称...</p>
+            </content>
+            <footer>网友评论：...</footer>
+        </section>
+        <section>
+            <h4 class="title">知情人爆料称马蓉闯入王宝强家拿剪刀对峙</h4>
+            <content>
+                <p>...</p>
+            </content>
+            <footer class="title">网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...网友评论：...</footer>
+        </section>
+        ...
+    </article>
+    <div id="test">111</div>
+    <div style="height:10000px"></div>
+</body>
+<script src="../../canvas/jquery.js"></script>
+<script type="text/javascript" src="sticky-polyfill.js"></script>
+<script>
+    if (!StickyPolyFill.ModernizrTestCSSPositionSticky()) {
+        StickyPolyFill.polyfill({
+            className: 'title',
+            top: '0px',
+            bottom: '0px',
+            zIndex: 3
+        });
+    }
+    var position = $("#test").position();
+
+    $(document).on('scroll', function() {
+        var sc = $(document).scrollTop();
+        if (position.top < sc) {
+            if ($('#test').attr('isfixed') == 1) {
+                return;
+            }
+            $('#test').css({
+                'position': 'fixed',
+                'top': 0,
+                'left': 0
+            }).attr('isfixed', 1);
+        } else {
+            if (!$('#test').attr('isfixed')) {
+                return;
+            }
+            $('#test').css({
+                'position': 'static'
+            }).attr('isfixed', 0);
+        }
+    })
+</script>
+
+</html>

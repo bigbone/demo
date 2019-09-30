@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>响应式</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: yellow;
+        }
+        
+        .header {
+            width: 100%;
+            height: 100px;
+            background: #ccc;
+            line-height: 100px;
+        }
+        
+        .main {
+            background: green;
+            width: 100%;
+        }
+        
+        .clearfix:after {
+            display: block;
+            height: 0;
+            content: "";
+            visibility: hidden;
+            clear: both;
+        }
+        
+        .left,
+        .center,
+        .right {
+            float: left;
+        }
+        
+        .left {
+            width: 20%;
+            background: #112993;
+            height: 300px;
+            font-size: 50px;
+            line-height: 300px;
+        }
+        
+        .center {
+            width: 60%;
+            background: #ff0;
+            height: 400px;
+            color: #fff;
+            font-size: 50px;
+            line-height: 400px;
+        }
+        
+        .right {
+            width: 20%;
+            background: #f0f;
+            height: 300px;
+            font-size: 50px;
+            line-height: 300px;
+        }
+        
+        .footer {
+            width: 100%;
+            height: 50px;
+            background: #000;
+            line-height: 50px;
+        }
+        
+        @media screen and (max-width:1024px) and (min-width:720px) {
+            .right {
+                float: none;
+                width: 100%;
+                background: #f0f;
+                clear: both;
+            }
+            .left {
+                width: 30%;
+            }
+            .center {
+                width: 70%;
+            }
+            .main {
+                height: 800px;
+            }
+        }
+        
+        @media screen and (max-width: 414px) {
+            .left,
+            .center,
+            .right {
+                float: none;
+                width: 100%;
+            }
+        }
+    </style>
+
+    <!--link rel="stylesheet" type="text/css" href="index02.css" media="screen and (max-width:720px)" / -->
+</head>
+
+<body>
+    <div class="header">头部</div>
+    <div class="main clearfix">
+        <div class="left">左边</div>
+        <div class="center">中间</div>
+        <div class="right">右边</div>
+    </div>
+    <div class="footer">底部</div>
+</body>
+
+</html>

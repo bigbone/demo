@@ -1,0 +1,86 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <body>
+    </body>
+    <script>
+        //单例。不能new
+        var sign = {
+            'proa': '1111',
+            'fun1': function() {
+                console.log('sign.proa=', sign.proa);
+                console.log('this.proa=', this.proa);
+                this.proa = '22222';
+                return '改变';
+            }
+        }
+        console.log('改变前', sign.proa, sign.fun1());
+        console.log('改变后', sign.proa, sign.fun1());
+
+        //直观，费内存
+        var obj = function(a) {
+            this.name = a;
+            this.fun1 = function() {
+                console.log(this.name);
+            }
+            this.setName = function(b) {
+                this.name = b;
+            }
+        }
+
+        var c = new obj('123');
+        var d = new obj('234');
+        c.fun1();
+        c.setName('222');
+        d.fun1();
+        c.fun1();
+
+
+
+        class Polygon {
+            constructor() {
+                this.name = "Polygon";
+            }
+        }
+        var e = new Polygon();
+
+        //内存利用高，看起来别扭
+        var p = function() {
+            this.name = '11';
+            this.sex = '1';
+        }
+        p.prototype.fun1 = function() {
+            console.log(this.name);
+        }
+
+        var child = function() {
+                this.name = '2222';
+                this.sonProperty = false;
+            }
+            //child.prototype被重写,导致child.prototype.constructor也一同被重写
+        child.prototype = new p();
+        child.prototype.name = '1';
+
+        child.prototype.fun1 = function() {
+            console.log('newfun1', this.name, child.prototype.name);
+        }
+        child.prototype.change = function() {
+            this.name = '333';
+            child.prototype.name = 'new name';
+        }
+        child.prototype.name1 = 'prototypename';
+
+        var h = new child();
+        var g = new child();
+        console.log(h.name, h.name1, h.sonProperty, h.name1);
+        h.fun1();
+        h.change();
+        h.fun1();
+        g.fun1();
+        console.log(h.hasOwnProperty('sex'), h.sex, h.hasOwnProperty('name'));
+        var s = new p();
+        console.log(s.name, s.name1, s.sonProperty, s.name1);
+        s.fun1();
+    </script>

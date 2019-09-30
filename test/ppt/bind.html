@@ -1,0 +1,121 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .eg {
+            padding-top: 200px;
+        }
+        
+        .item {
+            list-style: none;
+            border-bottom: 1px solid rgba(121, 44, 112, 0.1);
+        }
+        
+        .item .itemwrap {
+            padding: 10px 5px 0px 5px;
+            height: 100px;
+        }
+        
+        .item .itemwrap .itemmain {
+            display: flex;
+        }
+        
+        .item .itemwrap .itemmain .itemleft {
+            padding-right: 20px;
+        }
+        
+        .item .itemwrap .itemmain .itemcenter {
+            flex-direction: column;
+            -webkit-box-pack: center;
+            justify-content: space-between;
+            -webkit-box-flex: 1;
+            flex: 1;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+        }
+        
+        .item .itemwrap .itemmain .itemright .del {
+            display: none;
+        }
+        
+        .cur .itemwrap .itemmain .itemright .del {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class="eg" id="test">
+            <div class="item" node-type="item">
+                <div class="itemwrap">
+                    <div class="itemmain">
+                        <div class="itemleft">
+                            <input type="checkbox"> left
+                        </div>
+                        <div class="itemcenter">center</div>
+                        <div class="itemright">
+                            <a class="del" href="javascript:void(0)" action-data="a=1">删除</a>
+                            <a href="javascript:void(0)">编辑</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item" node-type="item">
+                <div class="itemwrap">
+                    <div class="itemmain">
+                        <div class="itemleft">
+                            <input type="checkbox"> left
+                        </div>
+                        <div class="itemcenter">center</div>
+                        <div class="itemright">
+                            <a class="del" href="javascript:void(0)" action-data="a=2">删除</a>
+                            <a href="javascript:void(0)">编辑</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item" node-type="item">
+                <div class="itemwrap">
+                    <div class="itemmain">
+                        <div class="itemleft">
+                            <input type="checkbox"> left
+                        </div>
+                        <div class="itemcenter">center</div>
+                        <div class="itemright">
+                            <a class="del" href="javascript:void(0)" action-data="a=3">删除</a>
+                            <a href="javascript:void(0)">编辑</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h3>注意</h3>
+        <p>1:找节点不依赖层级结构</p>
+        <p>2:找节点不依赖样式</p>
+        <p>3.数据传递最好通过属性传递</p>
+        <p>4.显示不同态最好在事件节点/父节点控制（css协调）</p>
+    </div>
+</body>
+<script type="text/javascript" src="//js.t.sinajs.cn/t5/brandevent/static/toolkit/jquery3.3.1.min.js"></script>
+<script>
+    //原生
+    $(document).on('click', '.del', function() {
+        console.log(this);
+    });
+    $(document).on('click', '[type="checkbox"]', function() {
+        var el = $(this);
+        var ischecked = el.prop('checked')
+        var item = el.parents('[node-type="item"]');
+        if (ischecked) {
+            item.addClass('cur');
+        } else {
+            item.removeClass('cur');
+        }
+    });
+</script>
+
+</html>

@@ -1,0 +1,121 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .light {
+            margin-top: 100px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: green;
+        }
+        
+        input {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="light" id="light"></div>
+    <input type="button" onclick="fun1()" value="start">
+    <script type="text/javascript">
+        function task(color) {
+            document.getElementById('light').style.background = color;
+        }
+
+        function start() {
+            setTimeout(function() {
+                task('yellow');
+                setTimeout(function() {
+                    task('red');
+                    setTimeout(function() {
+                        task('green');
+                        start();
+                    }, 6000);
+                }, 3000);
+            }, 6000);
+        }
+
+        function fun1() {
+            start();
+        }
+    </script>
+    <div class="light" id="light2"></div>
+    <input type="button" onclick="fun2()" value="start">
+    <script type="text/javascript">
+        function taskp(color, num) {
+            return new Promise((resolve, reject) => {
+                setTimeout(function() {
+                    document.getElementById('light2').style.background = color;
+                    resolve();
+                }, num);
+            });
+        }
+
+        function fun2() {
+            taskp('yellow', 6000)
+                .then(() => taskp('red', 3000))
+                .then(() => taskp('green', 6000))
+                .then(() => fun2());
+
+        }
+    </script>
+
+    <div class="light" id="light3"></div>
+    <input type="button" onclick="fun3()" value="start">
+    <script type="text/javascript">
+        function taska(color, num) {
+            return new Promise((resolve, reject) => {
+                setTimeout(function() {
+                    document.getElementById('light3').style.background = color;
+                    resolve();
+                }, num);
+            });
+        }
+
+        async function fun3() {
+            await taska('yellow', 6000);
+            await taska('red', 3000);
+            await taska('green', 6000);
+            fun3();
+        }
+    </script>
+
+    <div class="light" id="light4"></div>
+    <input type="button" onclick="fun4()" value="start">
+    <script type="text/javascript">
+        function sleep(ms) {
+            return new Promise(function(resolve, reject) {
+                setTimeout(resolve, ms);
+            });
+        }
+
+        function* task() {
+            var x = yield sleep(6000);
+            console.log('in1');
+            var y = yield sleep(3000);
+            console.log('in2');
+            var z = yield sleep(6000);
+            console.log('in3');
+        }
+
+        function fun4() {
+            const y = task();
+            y.next().value.then(function(r1) {
+                document.getElementById('light4').style.background = 'yellow';
+                y.next(r1).value.then(function(r2) {
+                    document.getElementById('light4').style.background = 'red';
+                    y.next(r2).value.then(function(r3) {
+                        y.next();
+                        document.getElementById('light4').style.background = 'green';
+                        fun4();
+                    })
+                })
+            });
+        }
+    </script>
+</body>
+
+</html>

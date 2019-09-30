@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Vue.js tree view example</title>
+    <style>
+        body {
+            font-family: Menlo, Consolas, monospace;
+            color: #444;
+        }
+        
+        .item {
+            cursor: pointer;
+        }
+        
+        .bold {
+            font-weight: bold;
+        }
+        
+        ul {
+            padding-left: 1em;
+            line-height: 1.5em;
+            list-style-type: dot;
+        }
+        
+        .outer {
+            height: 900px;
+        }
+        
+        .inner {
+            height: 800px;
+        }
+    </style>
+    <!-- Delete ".min" for console warnings in development -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+    <script type="text/x-template" id="child-template">
+        <div class="outer" v-load-more="changeName">
+            <div class="inner">
+                {{name}}
+                <ul>
+                    <li v-for="todo in datalist">
+                        {{ todo }}
+                    </li>
+                </ul>
+                <div>test</div>
+            </div>
+            <solt></solt>
+        </div>
+    </script>
+
+    <div id="app">
+        <p>{{childName}}</p>
+        <child :name="childName ">
+            <span>demo1</span>
+        </child>
+
+        <p>{{childName}}</p>
+        <child :name="childName ">
+            <span>demo2</span>
+        </child>
+        <div class="inner">1222</div>
+    </div>
+</body>
+<script>
+    Vue.directive('load-more', {
+        bind: (el, binding) => {
+            let windowHeight = window.screen.height;
+            let height;
+            let setTop;
+            let paddingBottom;
+            let marginBottom;
+            let requestFram;
+            let oldScrollTop;
+            let scrollEl;
+            let heightEl;
+            let scrollType = el.attributes.type && el.attributes.type.value;
+            let scrollReduce = 2;
+            if (scrollType == 2) {
+                scrollEl = el;
+                heightEl = el.children[0];
+            } else {
+                scrollEl = document.body;
+                heightEl = el;
+            }
+            el.addEventListener('touchstart', () => {
+                height = heightEl.clientHeight;
+                if (scrollType == 2) {
+                    height = height
+                }
+                setTop = el.offsetTop;
+                paddingBottom = getStyle(el, 'paddingBottom');
+                marginBottom = getStyle(el, 'marginBottom');
+            }, false)
+
+            el.addEventListener('touchmove', () => {
+                loadMore();
+            }, false)
+
+            el.addEventListener('touchend', () => {
+                oldScrollTop = gettop(scrollEl);
+                moveEnd();
+            }, false)
+
+            const getStyle = (element, attr, NumberMode = 'int') => {
+                let target;
+                // scrollTop 获取方式不同，没有它不属于style，而且只有document.body才能用
+                if (attr === 'scrollTop') {
+                    target = element.scrollTop;
+                } else if (element.currentStyle) {
+                    target = element.currentStyle[attr];
+                } else {
+                    target = document.defaultView.getComputedStyle(element, null)[attr];
+                }
+                //在获取 opactiy 时需要获取小数 parseFloat
+                return NumberMode == 'float' ? parseFloat(target) : parseInt(target);
+            }
+
+            const gettop = function(nd) {
+                if (nd == document.body) {
+                    return document.documentElement.scrollTop;
+                } else {
+                    return nd.scrollTop;
+                }
+            }
+            const moveEnd = () => {
+                requestFram = requestAnimationFrame(() => {
+                    if (gettop(scrollEl) != oldScrollTop) {
+                        oldScrollTop = gettop(scrollEl);
+                        moveEnd();
+                    } else {
+                        cancelAnimationFrame(requestFram);
+                        height = heightEl.clientHeight;
+                        loadMore();
+                    }
+                })
+            }
+
+            const loadMore = () => {
+                //console.log(gettop(scrollEl), windowHeight, height, setTop, paddingBottom, marginBottom, scrollReduce);
+                if (gettop(scrollEl) + windowHeight >= height + setTop + paddingBottom + marginBottom - scrollReduce) {
+                    binding.value();
+                }
+            }
+        }
+    });
+
+    Vue.component('child', {
+        'template': '#child-template',
+        props: ['name'],
+        data() {
+            return {
+                datalist: this.name
+            }
+        },
+        created() {
+            this.datalist = this.datalist.concat(5, 6, 7);
+        },
+        methods: {
+            changeName() {
+                this.name = '333';
+                this.datalist = this.datalist.concat(8, 9, 10, 11);
+            }
+        }
+    });
+
+    var demo = new Vue({
+        el: '#app',
+        data() {
+            return {
+                childName: [1, 2, 3],
+            };
+        },
+        methods: {
+            changeChildName() {
+                this.childName = 'no name';
+            }
+        }
+    });
+</script>
+
+</html>

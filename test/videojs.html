@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-title" content="">
+    <meta name=format-detection content="telephone=no">
+    <title>videojs</title>
+    <link href="https://vjs.zencdn.net/7.4.1/video-js.css" rel="stylesheet">
+    <style>
+        .video-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .video-js .vjs-big-play-button {
+            font-size: 2.5em;
+            line-height: 2.3em;
+            height: 2.5em;
+            width: 2.5em;
+            -webkit-border-radius: 2.5em;
+            -moz-border-radius: 2.5em;
+            border-radius: 2.5em;
+            background-color: #73859f;
+            background-color: rgba(115, 133, 159, .5);
+            border-width: 0.15em;
+            margin-top: -1.25em;
+            margin-left: -1.75em;
+        }
+        /* 中间的播放箭头 */
+        
+        .vjs-big-play-button .vjs-icon-placeholder {
+            font-size: 1.63em;
+        }
+        /* 加载圆圈 */
+        
+        .vjs-loading-spinner {
+            font-size: 2.5em;
+            width: 2em;
+            height: 2em;
+            border-radius: 1em;
+            margin-top: -1em;
+            margin-left: -1.5em;
+        }
+        /* 点击屏幕播放/暂停*/
+        
+        .video-js.vjs-playing .vjs-tech {
+            pointer-events: auto;
+        }
+        /*进度显示当前播放时间*/
+        
+        .video-js .vjs-time-control {
+            display: block;
+        }
+        
+        .video-js .vjs-remaining-time {
+            display: none;
+        }
+        /* 视频已经播放过了*/
+        
+        .vjs-has-started .vjs-big-play-button {}
+        /* 视频播放过程中*/
+        
+        .vjs-playing .vjs-big-play-button {
+            visibility: visible;
+            opacity: 0;
+            -webkit-transition: visibility 1s, opacity 1s;
+            transition: visibility 1s, opacity 1s
+        }
+        
+        .vjs-control-button .vjs-icon-placeholder:before {
+            content: "\E002";
+            margin-left: .31215rem;
+            font-size: 2rem;
+        }
+        
+        .vjs-has-started.vjs-playing .vjs-icon-placeholder {
+            visibility: visible;
+            opacity: 1;
+            -webkit-transition: visibility .1s, opacity .1s;
+            transition: visibility .1s, opacity .1s
+        }
+        
+        .vjs-user-active .vjs-big-play-button {
+            display: inline-block;
+            opacity: 1;
+        }
+        
+        .vjs-user-active.vjs-playing .vjs-icon-placeholder:before {
+            content: "\E001";
+            font-size: 1rem;
+            margin-left: 0
+        }
+        
+        .vjs-has-started.vjs-playing .vjs-has-started.vjs-playing .vjs-icon-placeholder:before {
+            content: "\E001";
+            font-size: 1rem;
+            margin-left: 0
+        }
+        /* 视频暂停播放*/
+        
+        .vjs-paused .vjs-big-play-button {
+            display: block;
+        }
+        /* 视频播放结束了*/
+        
+        .vjs-ended .vjs-big-play-button {}
+    </style>
+    <script src="https://vjs.zencdn.net/7.4.1/video.js"></script>
+</head>
+<div id="loading" style="display:none;">loading</div>
+<div id="loadata" style="display:none;">loadata</div>
+<video id="my-player" class="video-js vjs-big-play-centered" playsinline="playsinline" webkit-playsinline="true" x5-playsinline="true" x5-video-player-type="h5" x5-video-player-fullscreen="false" controls preload="meta" poster="//vjs.zencdn.net/v/oceans.png">
+  <source src="//vjs.zencdn.net/v/oceans.mp4" type="video/mp4"></source>
+  <source src="//vjs.zencdn.net/v/oceans.webm" type="video/webm"></source>
+  <source src="//vjs.zencdn.net/v/oceans.ogv" type="video/ogg"></source>
+  <p class="vjs-no-js">
+    To view this video please enable JavaScript, and consider upgrading to a
+    web browser that
+    <a href="https://videojs.com/html5-video-support/" target="_blank">
+      supports HTML5 video
+    </a>
+  </p>
+</video>
+
+
+<body>
+    <script>
+        var options = {
+            controls: 'control',
+            preload: 'none',
+            width: '856',
+            height: '508',
+
+            controlBar: {
+                playToggle: true,
+                children: [{
+                    name: 'playToggle'
+                }, {
+                    name: 'progressControl'
+                }, {
+                    name: 'currentTimeDisplay'
+                }, {
+                    name: 'timeDivider',
+                }, {
+                    name: 'durationDisplay'
+                }, {
+                    name: 'volumePanel',
+                    inline: false,
+                }, {
+                    name: 'fullscreenToggle'
+                }, ]
+            }
+        };
+
+        var player = videojs('my-player', options, function onPlayerReady() {
+            videojs.log('Your player is ready!');
+            var timer;
+            // In this context, `this` is the player that was created by Video.js.
+            document.querySelector('.vjs-tech').removeAttribute('z-index');
+
+            var vm = this;
+
+            document.querySelector('.vjs-big-play-button').addEventListener('touchstart', function() {
+                if (!vm.paused()) {
+                    setTimeout(function() {
+                        vm.pause();
+                    }, 300);
+                }
+            }, false);
+
+            this.on('waiting', function() {
+                document.title = 'waiting';
+                //document.getElementById('loading').style.display = '';
+            });
+            this.on('loadeddata', function() {
+                document.title = 'loadeddata';
+
+                //document.getElementById('loadata').style.display = '';
+            });
+
+            this.on('play', function() {
+                document.title = 'play';
+            });
+
+            this.on('timeupdate', function() {
+                document.title = 'timeupdate';
+            });
+        });
+    </script>
+</body>
+
+</html>

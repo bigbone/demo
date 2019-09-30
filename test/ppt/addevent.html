@@ -1,0 +1,137 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .eg {
+            padding-top: 200px;
+        }
+        
+        #a {
+            background-color: aqua;
+            padding: 20px 20px 20px 20px;
+            width: 800px;
+            height: 800px;
+        }
+        
+        #a0 {
+            background-color: azure;
+            padding: 20px 20px 20px 20px;
+            width: 700px;
+            height: 700px;
+        }
+        
+        #a1 {
+            background-color: blue;
+            padding: 20px 20px 20px 20px;
+            width: 600px;
+            height: 600px;
+        }
+        
+        #a2 {
+            background-color: green;
+            padding: 20px 20px 20px 20px;
+            width: 500px;
+            height: 500px;
+        }
+        
+        #a3 {
+            background-color: hotpink;
+            padding: 20px 20px 20px 20px;
+            width: 100px;
+            height: 400px;
+        }
+        
+        #a5 {
+            background-color: red;
+            padding: 20px 20px 20px 20px;
+            width: 100px;
+            height: 400px;
+        }
+        
+        #a6 {
+            background-color: orange;
+            padding: 20px 20px 20px 20px;
+            width: 100px;
+            height: 400px;
+        }
+        
+        .item .itemwrap .itemmain {
+            display: flex;
+        }
+        
+        .item .itemwrap .itemmain .itemcenter {
+            flex-direction: column;
+            -webkit-box-pack: center;
+            justify-content: space-between;
+            -webkit-box-flex: 1;
+            flex: 1;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>
+        <div class="eg" id="a">a
+            <div class="item" id="a0">a0
+                <div class="itemwrap" id="a1">a1
+                    <div class="itemmain" id="a2">a2
+                        <div class="itemleft" id="a3">a3
+                            <input type="checkbox" id="a4"> a4
+                        </div>
+                        <div class="itemcenter" id="a5">a5</div>
+                        <div class="itemright" id="a6">a6
+                            <a href="javascript:void(0)" id="a7">a7</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+<script type="text/javascript" src="//js.t.sinajs.cn/t5/brandevent/static/toolkit/jquery3.3.1.min.js"></script>
+<script>
+    var ispr = false;
+    document.getElementById('a1').addEventListener('click', function() {
+        console.log(1);
+        return false;
+    }, ispr);
+    document.getElementById('a2').addEventListener('click', function(e) {
+        console.log(e.target);
+        e.stopPropagation();
+        //e.stopImmediatePropagation();
+        console.log(2)
+    }, ispr);
+    document.getElementById('a3').addEventListener('click', function(e) {
+        e.stopPropagation();
+        //阻止事件冒泡
+        //e.stopImmediatePropagation();//还会阻止其他相同事件方法执行。
+        console.log(3)
+    }, ispr);
+    document.getElementById('a4').addEventListener('click', function() {
+        console.log(4)
+    }, ispr);
+    document.getElementById('a5').addEventListener('click', function() {
+        console.log(5)
+    }, ispr);
+    document.getElementById('a6').addEventListener('click', function() {
+        console.log(6)
+    }, ispr);
+    document.getElementById('a7').addEventListener('click', function() {
+        console.log(7)
+    }, ispr);
+    document.getElementById('a0').addEventListener('click', function() {
+        console.log(0)
+    }, ispr);
+    document.getElementById('a').addEventListener('click', function() {
+        console.log('a')
+    }, ispr);
+    document.body.addEventListener('click', function() {
+        console.log('body')
+    }, ispr);
+</script>

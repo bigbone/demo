@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>图片缩放</title>
+</head>
+
+<body style="background: black;">
+    <canvas id="canvas" style="display: block;margin: 0 auto;border: 1px solid #aaa;">
+		你的浏览器不支持canvas。
+	</canvas>
+    <input type="range" id="slider" min="0.5" max="3.0" step="0.01" value="1.0" style="display: block;margin: 20px auto;width: 800px;" />
+</body>
+
+<script>
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+
+    var slider = document.getElementById("slider");
+
+    var image = new Image(); //定义一个Image对象
+
+    window.onload = function() {
+        canvas.width = 1200;
+        canvas.height = 800;
+
+        image.src = "wz.jpeg"; //加载图片
+
+        //需要等image load完再把它画到canvas中，不然的话可能有不良后果
+        image.onload = function() {
+            drawImageByScale(slider.value);
+
+            slider.onmousemove = function() {
+                drawImageByScale(slider.value);
+            };
+        };
+
+        /**
+         * 根据一个缩放比例在画布上画一个图像
+         * @param  {float} scale 缩放比例
+         */
+        function drawImageByScale(scale) {
+            //根据图片的缩放比例调整图片的长宽
+            var imageWidth = canvas.width * scale;
+            var imageHeight = canvas.height * scale;
+
+            //画布上的起始点：画布的大小一半减去图像大小的一半。可以为负数，表示在左上角的外面。
+            var dx = canvas.width / 2 - imageWidth / 2;
+            var dy = canvas.height / 2 - imageHeight / 2;
+
+            //清空画布
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            //把image画到canvas中，dx、dy表示起始点坐标
+            context.drawImage(image, dx, dy, imageWidth, imageHeight);
+        }
+    };
+</script>
+
+</html>

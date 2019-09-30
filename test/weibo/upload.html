@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>上传图片</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div>
+        <form action="https://picupload.weibo.com/interface/pic_upload.php?mime=image%2Fjpeg&url=0&markpos=1&logo=&nick=0&marks=0&app=miniblog&s=rdxt&pri=null&file_source=1&cb=https%3A%2F%2Fdemo.weibo.com%2Ftest%2Fweibo%2Fuploadback.html%3Fcallback%3Dcallback"
+            enctype="multipart/form-data" method="POST" id="from1" target="uploadiframe">
+            <input type="file" name="pic1" id="test">
+            <input type="button" value="上传" id="upload">
+        </form>
+        <p id="pidresult"></p>
+        <select id="pidtype">
+          <option value="large">large</option>
+          <option value="mw1024">mw1024</option>
+          <option value="bmiddle">bmiddle</option>
+          <option value="small">small</option>
+          <option value="thumbnail">thumbnail</option>
+          <option value="mw690">mw690</option>
+          <option value="nmw690">nmw690</option>
+          <option value="cmw218">cmw218</option>
+          <option value="mw240">mw240</option>
+          <option value="cmw218">cmw218</option>
+          <option value="thumb300">thumb300</option>
+          <option value="thumb180">thumb180</option>
+          <option value="thumb150">thumb150</option>
+          <option value="square">square</option>
+          <option value="thumb50">thumb50</option>
+          <option value="thumb30">thumb30</option>
+          <option value="wap50">wap50</option>
+          <option value="wap180">wap180</option>
+          <option value="webp180">webp180</option>
+          <option value="wap360">wap360</option>
+          <option value="webp360">webp360</option>
+          <option value="wap720">wap720</option>
+          <option value="webp720">webp720</option>
+          <option value="mw720">mw720</option>
+          <option value="mw2048">mw2048</option>
+          <option value="woriginal">woriginal</option>
+          <option value="wap128">wap128</option>
+          <option value="wap320">wap320</option>
+          <option value="or480">or480</option>
+          <option value="or360">or360</option>
+          <option value="or180">or180</option>
+          <option value="orj480">orj480</option>
+          <option value="orj360">orj360</option>
+          <option value="orj180">orj180</option>
+      </select>
+        <input type="checkbox" id="ishttps">是否https
+        <input type="button" value="获取图片" id="getimgurl">
+        <p id="imgsrc"></p>
+        <img src="" id="uploadimg">
+        <iframe name="uploadiframe" id="uploadiframe" height="0" width="0" frameborder="no"></iframe>
+    </div>
+</body>
+<script src="../../canvas/imgparse.js"></script>
+<script>
+    document.getElementById('upload').addEventListener('click', function() {
+        var abaurl = window.location.protocol + '//' + document.domain + '/test/weibo/uploadback.html?callback=callback';
+        var url = 'https://picupload.weibo.com/interface/pic_upload.php?mime=image%2Fjpeg&url=0&markpos=1&logo=&nick=0&marks=0&app=miniblog&s=rdxt&pri=null&file_source=1&cb=' + encodeURIComponent(abaurl);
+        document.getElementById('from1').action = url;
+        document.getElementById('from1').submit();
+    });
+
+    var callback = function(info) {
+        if (info.ret == 1) {
+            var pid = info.pid;
+            document.getElementById('pidresult').innerHTML = pid;
+            document.getElementById('from1').reset();
+        } else {
+            var codeList = {
+                '-1': '没有登录weibo.com',
+                '-2': '没有收到PUT的数据',
+                '-3': '没有指定cb参数',
+                '-4': '没有发现提交上传文件',
+                '-5': '该app没有开放图片上传服务',
+                '-6': 'SINAPRO或uid非法',
+                '-7': '参数s值不被支持',
+                '-8': '数据上传失败',
+                '-9': '文件mime类型不支持',
+                '-10': '文件字节数超限',
+                '-11': '存储错误'
+            }
+            alert(codeList[info.ret]);
+        }
+
+    }
+    document.getElementById('getimgurl').addEventListener('click', function() {
+        var pid = document.getElementById('pidresult').innerHTML;
+        var type = document.getElementById('pidtype').value;
+        if (pid && type) {
+            var imgsrc = _WB.getImgURL(pid, type, document.getElementById('ishttps').checked);
+            document.getElementById('imgsrc').innerHTML = imgsrc;
+            document.getElementById('uploadimg').src = imgsrc;
+        }
+    });
+</script>
+
+</html>

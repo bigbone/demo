@@ -1,0 +1,63 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <h3>css3动画</h3>
+    <p>动画特快（关客户端）</p>
+    <p>滑动页面css不执行</p>
+
+    <h3>视频</h3>
+    <p>1.video 客户端 页面播放（bconf=3）微信通过x5css</p>
+    <p>2.如果有对视频交互比如跳过，尽量通过css动画针做(可控)</p>
+    <p>3.android 设置播放时间点不准（currentTime）<a href="https://www.cnblogs.com/luoeeyang/p/9765506.html">关键帧</a></p>
+    <p>4.建议只用timeupdate/end(android有问题)事件，其他事件少用。</p>
+    <p>5.自动播放（通过点击事件处理）</p>
+    <p>6.预加载视频（除了客户浏览器处理没别的办法 android黑屏）</p>
+    <p>7.bconf = (1->0) AllowsInlineMediaPlayback（视频允许inline播放：仅iOS） bconf=( 1->1) PlaybackRequiresUserAction(视频播放是否需要用户触发(仅wifi下生效)：iOS && Android)</p>
+
+    <h3>音频</h3>
+    <p>1.一个事件只能播放2个声音.(touchstart/click)</p>
+    <p>2.ajax回调方法不能播放（ajax改成同步）</p>
+    <p>3.自动播放（bconf=3 wifi自动播放（微信通过weixinjsready事件）</p>
+    <p>4.通过timeupdate获取是否自动播放（设置背景音乐开关）</p>
+
+    <h3><a href="https://gitlab.weibo.cn/webBrowser/JSBridge/blob/master/WebBrowserScheme.md">浏览器参数</a></h3>
+    <p>sinainternalbrowser:(topnav 取消下面的刷新前进按钮，external 用系统的浏览器打开)</p>
+    <p>portrait_only=1 禁用重力感应</p>
+    <p>share_menu=1 保留分享菜单</p>
+    <p>disable_gesture_back=1 禁用翻页（后退）的功能</p>
+    <p>disable_sinaurl | 值为1时禁用sinaurl跳转</p>
+    <p>topnavstyle=2&immersiveScroll=100 页面客户端加参数，可以去掉顶部</p>
+    <p>disable_gesture_back=1 禁用左右滑切换。</p>
+    <o>showmenu 右上角更多按钮 0 关闭 1显示</o>
+    <p>landscape_only 设置浏览器锁定横屏 1 禁用横屏</p>
+    <p>浏览器参数第一次生效。以第一次初始化webview的参数为准（301/302的地址参数无效）可以新建一个webview来解决(很多地址都会通过m站过一次)</p>
+    <p>浏览器点返回，不会重新请求渲染页面。浏览器会直接将跳转过去的快照直接给当前view。牵扯到返回刷新的问题。可以通过监听页面是否<a href="http://git.intra.weibo.com/huodong/js_brandevent/blob/master/js/h5/lib/extra/changeview.js">由隐藏变成显示</a>来处理。跳转地址如果是h5.需要新webview打开，scheme不用。</p>
+    <p>有些参数有jsbriage设置。</p>
+
+    <h3>缓存</h3>
+    <p>cookie 客户端大退后，cookie将消失</p>
+    <p>localStorage客户端大退后，cookie不消失</p>
+    <p>indexDB</p>
+
+
+    <h3>其他</h3>
+    <p>ios点击事件不<a href="https://www.jianshu.com/p/d29898db2182">生效</a></p>
+    <p>android 下原生标签丑（事件选择/select）</p>
+    <p>通过openmenu分享anroid 带【】</p>
+    <p>客户端浏览器ajax请求需要带一个变化参数（和IE6一样）</p>
+    <p>android低版本 输入框输入后，键盘下去页面不重绘。（光标置入节点）</p>
+    <p>弹层出现滚动条导致页面滚动</p>
+    <p>弹层关闭透传的问题</p>
+
+    <h3>常用的scheme</h3>
+    <p>1.新webview打开： sinaweibo://browser?url=encodeURICompent('地址') </p>
+    <p>2.关闭当前的webview打开地址 sinaweibo://browser/close?scheme=encodeURICompent('地址') </p>
+    <p>3.cardslist 中打开弹层：sinaweibo://transparentbrowser?url=".urlencode('地址')样式html,body{background-color: rgba(0, 0, 0, 0);}透明<br> 打开页面地址链接如果是h5的地址。需要通过2的方式打开。如果是非web页面则可以直接打开。 必须提供关闭按钮。要不关不了。关闭按钮的地址为2不加scheme地址。
+    </p>
+</body>
+
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+</head>
+
+<body>
+    <div>
+        <canvas width="414px" height="200px" id="canvas" style="border:1px solid red;"></canvas>
+        <img src="" id="imgend" />
+    </div>
+</body>
+<!--script src="http://ossh5.rockstudio.cn/H/street/libs/touch-0.2.14.min.js"></script-->
+<script type="text/javascript">
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    var moveinfo = {
+        initTouchX: 0,
+        initTouchY: 0,
+        changeTouchX: 0,
+        changeTouchY: 0,
+        lastTouchX: 0,
+        lastTouchY: 0,
+        myImg: {
+            position: {
+                x: 0,
+                y: 0
+            },
+            scale: 1,
+            lastScale: 1
+        }
+    }
+    var img = new Image();
+    img.onload = function() {
+        drawImage();
+    }
+    img.src = 'wz.jpeg';
+
+    var drawImage = function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var sc = img.width / canvas.width;
+        var th = canvas.height * sc;
+        ctx.scale(moveinfo.myImg.scale, moveinfo.myImg.scale);
+        ctx.translate(moveinfo.myImg.position.x, moveinfo.myImg.position.y);
+        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height);
+    }
+    document.addEventListener('touchstart', function(event) {
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    })
+    var lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+        var now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+    canvas.addEventListener('touchstart', function(e) {
+        e.preventDefault()
+        var length = e.touches.length
+        if (length > 1) {
+            let pointOne = e.touches[0]
+            let pointTwo = e.touches[1]
+            moveinfo.initTouchX = pointOne.clientX - pointTwo.clientX
+            moveinfo.initTouchY = pointOne.clientY - pointTwo.clientY
+        } else {
+            var touches = e.touches[0]
+            moveinfo.initTouchX = touches.clientX
+            moveinfo.initTouchY = touches.clientY
+        }
+    });
+    canvas.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+        var length = e.touches.length
+        if (length > 1) {
+            let pointOne = e.touches[0]
+            let pointTwo = e.touches[1]
+            moveinfo.changeTouchX = pointOne.clientX - pointTwo.clientX
+            moveinfo.changeTouchY = pointOne.clientY - pointTwo.clientY
+            var scale = (moveinfo.changeTouchX - moveinfo.initTouchX) > (moveinfo.changeTouchY - moveinfo.initTouchY) ? (moveinfo.changeTouchX / moveinfo.initTouchX) : (moveinfo.changeTouchY / moveinfo.initTouchY)
+            scale *= moveinfo.myImg.lastScale
+            moveinfo.myImg.scale = scale > 3 ? 3 : scale < 0.5 ? 0.5 : scale
+        } else {
+            var touches = e.touches[0]
+            moveinfo.changeTouchX = touches.clientX - moveinfo.initTouchX
+            moveinfo.changeTouchY = touches.clientY - moveinfo.initTouchY
+            moveinfo.myImg.position.x = moveinfo.lastTouchX + (moveinfo.changeTouchX / moveinfo.myImg.scale)
+            moveinfo.myImg.position.y = moveinfo.lastTouchY + (moveinfo.changeTouchY / moveinfo.myImg.scale)
+        }
+        drawImage();
+    });
+
+    canvas.addEventListener('touchend', function(e) {
+        e.preventDefault()
+        moveinfo.myImg.lastScale = moveinfo.myImg.scale
+        if (e.touches.length > 0) {
+            var touches = e.touches[0]
+            moveinfo.initTouchX = touches.clientX
+            moveinfo.initTouchY = touches.clientY
+        }
+        moveinfo.lastTouchX = moveinfo.myImg.position.x
+        moveinfo.lastTouchY = moveinfo.myImg.position.y
+        drawImage();
+    });
+
+    /* var imgX = 0,
+         imgY = 0,
+         imgScale = 1;
+     var cccc = 1;
+     var img = new Image();
+     var drawImage = function() {
+         ctx.clearRect(0, 0, canvas.width, canvas.height);
+         //ctx.drawImage();
+         //ctx.globalCompositeOperation = 'destination-over';
+         //ctx.scale(imgScale, imgScale);
+         var sc = img.width / canvas.width;
+         var th = canvas.height * sc;
+         cccc = sc;
+         var oh = touchjs.top;
+         if (touchjs.top >= 0) {
+             if (touchjs.left >= 0) {
+                 ctx.drawImage(img, touchjs.left / sc, touchjs.top / sc, img.width, th, 0, 0, canvas.width, canvas.height);
+             } else {
+                 ctx.drawImage(img, 0, touchjs.top / sc, img.width, th, -touchjs.left / sc, 0, canvas.width, canvas.height);
+             }
+         } else {
+             if (touchjs.left >= 0) {
+                 ctx.drawImage(img, touchjs.left, 0, img.width, th, 0, -touchjs.top / sc, canvas.width, canvas.height);
+             } else {
+                 ctx.drawImage(img, 0, 0, img.width, th, -touchjs.left / sc, -touchjs.top / sc, canvas.width, canvas.height);
+             }
+         }
+     }
+     img.onload = function() {
+         drawImage();
+     }
+
+     img.src = 'wz.jpeg';
+     var n = 1;
+     var evt = {
+         pinch: function(e) {},
+         test: function() {
+             document.title = n++;
+         }
+     }
+     var touchjs = {
+         left: 0,
+         top: 0,
+         'startx': 0,
+         'starty': 0,
+         scaleVal: 1, //缩放  
+         //rotateVal: 0, //旋转  
+         curStatus: 0, //记录当前手势的状态, 0:拖动, 1:缩放, 2:旋转  
+     }
+     touch.on(canvas, 'touchstart', function(ev) {
+         touchjs.curStatus = 0;
+         ev.preventDefault(); //阻止默认事件  
+     });
+
+     var initialScale = touchjs.scaleVal || 1;
+     var currentScale;
+     touch.on(document, 'pinch', function(ev) {
+         if (touchjs.curStatus == 2) {
+             return;
+         }
+         touchjs.curStatus = 1;
+         currentScale = ev.scale - 1;
+         currentScale = initialScale + currentScale;
+         touchjs.scaleVal = currentScale;
+         console.log(touchjs.scaleVal);
+         drawImage();
+     });
+
+     touch.on(document, 'pinchend', function(ev) {
+         if (touchjs.curStatus == 2) {
+             return;
+         }
+         initialScale = currentScale;
+         touchjs.scaleVal = currentScale;
+         console.log('end' + touchjs.scaleVal);
+         drawImage();
+     });
+     touch.on(document, 'swipestart', function(ev) {
+         touchjs.startx = ev.position.x;
+         touchjs.starty = ev.position.y;
+     });
+     touch.on(document, 'swiping', function(ev) {
+         console.log(ev);
+         ox = ev.position.x - touchjs.startx;
+         oy = ev.position.y - touchjs.starty;
+         touchjs.top = touchjs.top - oy;
+         touchjs.left = touchjs.left - ox;
+         //console.log(touchjs);
+         drawImage();
+     });
+     if (window.weibo) {
+         WeiboJSBridge.invoke('setBrowserDomain', {
+             'hideDomain': 1
+         }, {
+             success: function(params) {}
+         });
+     }*/
+</script>
+
+</html>

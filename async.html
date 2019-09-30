@@ -1,0 +1,55 @@
+<html>
+
+<head> </head>
+
+<body>
+    <div id="test">doing...</div>
+</body>
+<script>
+    var x = 10
+
+    async function timeout(ms) {
+        return new Promise((resolve) => {
+            x = 50;
+            setTimeout(resolve, ms);
+        });
+    }
+
+    async function asyncPrint(value, ms) {
+        console.log('inprint');
+        await timeout(ms);
+        console.log(value);
+        console.log(x * 100);
+        document.getElementById('test').innerHTML = 'done';
+        await timeout(ms);
+        document.writeln('ok');
+    }
+
+    var time = new Date();
+    async function getImg(src) {
+        return new Promise(function(resolve, reject) {
+            var img = new Image();
+            img.onload = function() {
+                setTimeout(function() {
+                    resolve(img);
+                }, 2000);
+            }
+            img.onerror = function() {
+                reject();
+            }
+            img.src = src;
+        });
+    }
+
+    async function asyncgetimg() {
+        var d = await getImg('https://wx2.sinaimg.cn/mw690/4b4d632fgy1fw9epwzuywj20ca02ot99.jpg');
+        document.getElementById('test').append(d);
+        var t = await getImg('https://wx3.sinaimg.cn/mw690/63ee9e7cgy1fwjb669gacj20qo0zkald.jpg');
+        document.getElementById('test').append(t);
+        console.log('img ready');
+    }
+    asyncgetimg();
+    asyncPrint('hello world', 5000);
+</script>
+
+</html>

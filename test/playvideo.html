@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-title" content="">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
+    <style>
+        .vjs-tech {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .vjs-tech {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .vjs-control-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3.375rem;
+            height: 3.375rem;
+            margin: -1.6875rem 0 0 -1.6875rem;
+            background: rgba(0, 0, 0, .4);
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            border-radius: 50%;
+        }
+        
+        .pro {
+            width: 100%;
+            height: 10px;
+        }
+    </style>
+    <title>播放视频</title>
+</head>
+<button onclick="palyvideo()">测试</button>
+<div>
+    <span id="time"></span>/<span id="duration"></span><span id="isend"></span>
+
+    <progress id="vpro" value="75" max="100">
+          </progress>
+</div>
+<div id="vic"></div>
+
+<body>
+    <script>
+        var isinit = false;
+        var palyvideo = function() {
+            var html = `<div>
+              <div></div>
+              <div><video id="vjs_video_3_Html5_api" class="vjs-tech" preload="true" playsinline="playsinline" src="https://gslb.miaopai.com/stream/f3j-QVZxbMZZhuDDgHP0fujXK-IGF2e2Rzx1Cw__.mp4?yx=&refer=weibo_app&vend=weibo&label=mp4_hd&mpflag=8&Expires=1552298140&ssig=1I0GqGLL%2Bn&KID=unistore,video"></video>
+                <a class="vjs-control-button" id="pause" type="button"  title="Control">暂停</a>
+                
+                <a class="vjs-dispose-player" type="button" id="close" aria-disabled="false" title="Close">关闭</a>
+                </div>
+              </div>`;
+
+            document.getElementById('vic').innerHTML = html;
+            var video = document.getElementById('vjs_video_3_Html5_api');
+            video.play();
+
+            document.getElementById('pause').addEventListener('click', function() {
+                console.log(this.innerHTML)
+                if (this.innerHTML == '暂停') {
+                    video.pause();
+                    this.innerHTML = '播放';
+                } else {
+                    video.play();
+                    this.innerHTML = '暂停';
+                }
+
+            }, false);
+
+            document.getElementById('close').addEventListener('click', function() {
+                video.pause();
+                video = null;
+                document.getElementById('vic').innerHTML = '';
+            }, false);
+            video.addEventListener('timeupdate', function() {
+                document.getElementById('time').innerHTML = video.currentTime.toFixed(2);
+                !isinit && (document.getElementById('duration').innerHTML = video.duration.toFixed(2));
+                isinit = true;
+                document.getElementById('vpro').value = (video.currentTime / video.duration).toFixed(2) * 100
+            }, false);
+            video.addEventListener('ended', function() {
+                document.getElementById('isend').innerHTML = '播放完毕';
+            }, false);
+
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Vue.js tree view example</title>
+    <style>
+        body {
+            font-family: Menlo, Consolas, monospace;
+            color: #444;
+        }
+        
+        .bounce-enter-active {
+            animation: bounce-in .5s;
+        }
+        
+        .bounce-leave-active {
+            animation: bounce-in .5s reverse;
+        }
+        
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+    <!-- Delete ".min" for console warnings in development -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+    <div id="example-2">
+        <button @click="show = !show">Toggle show</button>
+        <transition name="bounce">
+            <p v-if="show">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris facilisis enim libero, at lacinia diam fermentum id. Pellentesque habitant morbi tristique senectus et netus.</p>
+        </transition>
+    </div>
+
+
+
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+
+    <div id="example-3" style="height:200px;">
+        <button @click="show = !show">
+    Toggle render
+  </button>
+        <transition name="custom-classes-transition" enter-active-class="animated tada" leave-active-class="animated bounceOutRight">
+            <p v-if="show">和第三方动画库合作，通过设置enter/leave-active-class</p>
+        </transition>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
+
+    <div id="example-4" style="height:100px;">
+        <button @click="show = !show">Toggle</button>
+        <transition v-on:before-enter="beforeEnter" v-on:enter="enter" v-on:leave="leave" v-bind:css="false">
+            <p v-if="show">
+                Demo
+            </p>
+        </transition>
+    </div>
+
+
+    <!--in-out：新元素先进行过渡，完成之后当前元素过渡离开。
+
+    out-in：当前元素先进行过渡，完成之后新元素过渡进入。-->
+    <div id="no-mode-demo" class="demo">
+        <transition name="no-mode-fade" mode="out-in">
+            <button v-if="on" key="on" @click="on = false">
+            on
+          </button>
+            <button v-else="" key="off" @click="on = true">
+            off
+          </button>
+        </transition>
+    </div>
+</body>
+<script>
+    new Vue({
+        el: '#example-2',
+        data: {
+            show: true
+        }
+    });
+</script>
+
+<script>
+    new Vue({
+        el: '#example-3',
+        data: {
+            show: true
+        }
+    })
+</script>
+
+
+<script>
+    new Vue({
+        el: '#example-4',
+        data: {
+            show: false
+        },
+        methods: {
+            beforeEnter: function(el) {
+                el.style.opacity = 0
+                el.style.transformOrigin = 'left';
+            },
+            enter: function(el, done) {
+                Velocity(el, {
+                    opacity: 1,
+                    fontSize: '1.4em'
+                }, {
+                    duration: 300
+                })
+                Velocity(el, {
+                    fontSize: '1em'
+                }, {
+                    complete: done
+                })
+            },
+            leave: function(el, done) {
+                Velocity(el, {
+                    translateX: '15px',
+                    rotateZ: '50deg'
+                }, {
+                    duration: 600
+                })
+                Velocity(el, {
+                    rotateZ: '100deg'
+                }, {
+                    loop: 2
+                })
+                Velocity(el, {
+                    rotateZ: '45deg',
+                    translateY: '30px',
+                    translateX: '30px',
+                    opacity: 0
+                }, {
+                    complete: done
+                })
+            }
+        }
+    })
+</script>
+
+<script>
+    new Vue({
+        el: '#no-mode-demo',
+        data: {
+            on: false
+        }
+    })
+</script>
+<style>
+    .no-mode-fade-enter-active,
+    .no-mode-fade-leave-active {
+        transition: opacity .5s
+    }
+    
+    .no-mode-fade-enter,
+    .no-mode-fade-leave-active {
+        opacity: 0
+    }
+</style>
+
+</html>

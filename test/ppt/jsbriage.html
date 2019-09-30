@@ -1,0 +1,27 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <h3>
+        <a href="https://www.cnblogs.com/dailc/p/5931324.html#hybrid_3_5">原理</a></h3>
+    <p>
+        <img src="https://dailc.github.io/staticResource/blog/hybrid/jsbridge/img_hybrid_base_jsbridgePrinciple_1.png">
+    </p>
+    <p>
+        js 调用native <br>在Android中(WebViewClient里),通过shouldoverrideurlloading可以捕获到url scheme的触发<br>
+        <img src="android.png"><br> iOS中,UIWebView有个特性：在UIWebView内发起的所有网络请求，都可以通过delegate函数在Native层得到通知
+        <br><img src="ios.png">
+    </p>
+    <p> native 调用js <br> JSBridge._handleMessageFromNative(messageJSON);
+        <br> {handlerName:api名,data:数据,callbackId:回调id}
+    </p>
+    <p>注意</p>
+    <p>1.支持的客户端版本</p>
+    <p>2.android jsbridge 会晚加载。通过jsbridgeready事件来触发</p>
+    <p>3.保存图片到本地需要执行完后再调用，要不会花</p>
+    <iframe src="../weibo/calener.html"></iframe>
+    <h3><a href="https://gitlab.weibo.cn/webBrowser/JSBridge">wiki</a></h3>
+</body>

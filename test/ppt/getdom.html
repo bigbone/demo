@@ -1,0 +1,121 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .eg {
+            padding-top: 200px;
+        }
+        
+        .item {
+            list-style: none;
+            border-bottom: 1px solid rgba(121, 44, 112, 0.1);
+        }
+        
+        .item .itemwrap {
+            padding: 10px 5px 0px 5px;
+            height: 100px;
+        }
+        
+        .item .itemwrap .itemmain {
+            display: flex;
+        }
+        
+        .item .itemwrap .itemmain .itemleft {
+            padding-right: 20px;
+        }
+        
+        .item .itemwrap .itemmain .itemcenter {
+            flex-direction: column;
+            -webkit-box-pack: center;
+            justify-content: space-between;
+            -webkit-box-flex: 1;
+            flex: 1;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+        }
+        
+        .item .itemwrap .itemmain .itemright .del {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class="eg" id="test">
+            <div class="item">
+                <div class="itemwrap">
+                    <div class="itemmain">
+                        <div class="itemleft">
+                            <input type="checkbox"> left
+                        </div>
+                        <div class="itemcenter">center</div>
+                        <div class="itemright">
+                            <a class="del" href="javascript:void(0)">删除</a>
+                            <a href="javascript:void(0)">编辑</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="itemwrap">
+                    <div class="itemmain">
+                        <div class="itemleft">
+                            <input type="checkbox"> left
+                        </div>
+                        <div class="itemcenter">center</div>
+                        <div class="itemright">
+                            <a class="del" href="javascript:void(0)">删除</a>
+                            <a href="javascript:void(0)">编辑</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="itemwrap">
+                    <div class="itemmain">
+                        <div class="itemleft">
+                            <input type="checkbox"> left
+                        </div>
+                        <div class="itemcenter">center</div>
+                        <div class="itemright">
+                            <a class="del" href="javascript:void(0)">删除</a>
+                            <a href="javascript:void(0)">编辑</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="//js.t.sinajs.cn/t5/brandevent/static/toolkit/jquery3.3.1.min.js"></script>
+<script>
+    //原生
+    var testdom = document.getElementById('test');
+    console.log(testdom);
+    //下面返回的是类数组。需要通过prototype方式调用数组的方法。
+    var alldivs = testdom.getElementsByTagName('div');
+    console.log(alldivs);
+    console.log(testdom.getElementsByClassName('item'));
+
+    //高级点的方法,低版本可能不支持,返回的第一个适配的元素
+    var testdom1 = document.querySelector('.item');
+    console.log(testdom1);
+    var testitem = document.querySelectorAll('.item');
+    console.log(testitem);
+
+    //用jquery/zepto
+    var testdom2 = $('#test');
+    var testitem2 = $('.item');
+    var checkboxs = $('input[type="checkbox"]:checked');
+    var allchekbox = testdom2.find('input');
+    var allas = $('.item a.del');
+    console.log(allchekbox);
+    //合集
+    console.log($('input,a.del'));
+    //注意这里返回的都是数组。通过index可以获取当前对象的原生节点。
+    //判断节点是否找到，需要判断长度是否为0.
+</script>
+
+</html>

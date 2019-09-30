@@ -1,0 +1,43 @@
+    .indexlist {
+        margin-top: 200px;
+    }
+    
+    .indexlist .item {
+        list-style: none;
+        float: left;
+        width: 25%;
+        border: 1px solid #cccccc;
+        height: 200px;
+        text-align: center;
+        margin-top: 20px;
+        margin-left: 20px;
+        border-radius: 20px;
+        box-shadow: 2px 2px 5px #333333;
+        position: relative;
+    }
+    
+    .indexlist .item:hover {
+        box-shadow: 2px 2px 5px #713232;
+        background-color: #1d9d74;
+        color: #fff;
+    }
+    
+    .indexlist .item:hover .content .fa {
+        font-size: 100px;
+    }
+    
+    .indexlist .item:hover a {
+        font-size: 16px;
+    }
+    
+    .indexlist .item .content {
+        top: 20%;
+        position: absolute;
+        left: 35%;
+        margin: auto;
+    }
+    
+    .indexlist .item .content .icon {
+        display: block;
+        font-size: 80px;
+    }

@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-title" content="">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <script src="http://img.t.sinajs.cn/t4/appstyle/operators_special/script/more/ios.js"></script>
+
+    <link rel=stylesheet href="../common/reset.css"></link>
+    <style>
+        .test {
+            width: 100%;
+            height: auto;
+            padding: 20px 0;
+            box-sizing: border-box;
+            border-right: none;
+            border-bottom-style: dashed;
+            text-align: left;
+        }
+        
+        .m-top-nav {
+            border-bottom: 0.35714px solid #e6e6e6;
+            position: fixed;
+            z-index: 99;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            height: 2.3125rem;
+            box-sizing: border-box;
+            border-bottom: 1px solid #e6e6e6;
+            opacity: .9;
+        }
+        
+        .m-box {
+            display: -ms-flexbox;
+            display: flex;
+        }
+        
+        .m-top-nav .nav-main {
+            height: 40px;
+            overflow: hidden;
+            width: 1px;
+        }
+        
+        .m-box-col {
+            -ms-flex: 1;
+            flex: 1;
+            width: 100%;
+            display: block;
+        }
+        
+        .m-top-nav .nav-main::before {
+            content: "";
+            position: absolute;
+            z-index: 9;
+            width: 0.75rem;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: linear-gradient(to right, white 0%, white 50%, rgba(255, 255, 255, 0) 100%);
+        }
+        
+        .m-top-nav .scroll-box {
+            line-height: 40px;
+            padding-bottom: 20px;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .m-top-nav .nav-item {
+            white-space: nowrap;
+            padding: 0 0.5rem;
+        }
+        
+        .m-top-nav .nav-item li {
+            display: inline-block;
+            font-size: 1rem;
+            line-height: 2.3125rem;
+            padding: 0 0.5625rem;
+        }
+        
+        .m-top-nav .nav-item li.m-cur span {
+            position: relative;
+        }
+        
+        .m-top-nav .nav-item li span {
+            display: block;
+            padding: 0 0.25rem;
+        }
+        
+        .m-top-nav .nav-item li {
+            display: inline-block;
+            font-size: 1rem;
+            line-height: 2.3125rem;
+            padding: 0 0.5625rem;
+            cursor: pointer;
+        }
+        
+        .m-top-nav .nav-item li.m-cur ::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            font-size: 0;
+            overflow: hidden;
+            background: #FF8200;
+        }
+        
+        .m-top-nav .nav-plus {
+            width: 2.4375rem;
+            position: relative;
+        }
+        
+        .m-box-center {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-pack: center;
+            justify-content: center;
+        }
+        
+        .m-box-center-a {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+        }
+        
+        .m-top-nav .nav-plus::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 0.5rem;
+            transform: translateX(-100%);
+            -webkit-mask: -webkit-linear-gradient(top, transparent, #000 45%, #000 55%, transparent 100%);
+            border-right: 1px solid #ccc;
+            box-shadow: inset -3px 0 3px rgba(0, 0, 0, 0.11);
+        }
+        
+        .m-font {
+            font-family: "marvelfont";
+            display: inline-block;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .m-font-plus::before {
+            content: "\E00D";
+        }
+        
+        .contain {
+            padding-top: 40px;
+        }
+        
+        .scroll-box::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scroll-box::-moz-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test">
+        <div class="m-top-nav">
+            <div class="m-box">
+                <div class="m-box-col nav-main">
+                    <div class="scroll-box">
+                        <ul class="nav-item">
+                            <li action-data="index=1" class="m-cur"><span>推荐</span></li>
+                            <li action-data="index=2"><span>榜单</span></li>
+                            <li action-data="index=3"><span>北京</span></li>
+                            <li action-data="index=4"><span>视频</span></li>
+                            <li action-data="index=5"><span>家居</span></li>
+                            <li action-data="index=6"><span>体育</span></li>
+                            <li action-data="index=7"><span>视频</span></li>
+                            <li action-data="index=8"><span>房产</span></li>
+                            <li action-data="index=9"><span>家居</span></li>
+                            <li action-data="index=10"><span>明星</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="nav-plus m-box-center m-box-center-a">
+                    <i class="m-font m-font-plus"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="contain" style="height:4000px;border:1px solid red;"></div>
+</body>
+<script src="../canvas/jquery.js"></script>
+<script>
+    $(document).on('click', 'li', function() {
+        $('.m-cur').removeClass('m-cur');
+        $(this).addClass('m-cur');
+        //alert($(this).attr('action-data'));
+        $(document).scrollTop(0);
+        $('.contain').html($(this).attr('action-data'));
+
+    })
+</script>
+
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>我的首页 微博-随时随地发现新鲜事</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-title" content="">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+</head>
+
+<body>
+
+    <div style="height: 12000px;">
+        <a href="javascript:void(0)" onclick="test()">test</a>
+        <a href="sinaweibo://comment?srcid=4412115240149873&placeholder=123213&bg_url=https%3A%2F%2Fwx2.sinaimg.cn%2Fmw690%2F005DwD2Sly1g6m2l66divj348w6dcnpi.jpg&content=123123">test</a>
+    </div>
+</body>
+<script>
+    //使用weibojsbridge把页面的左右滑动功能禁掉
+    /*var opts = {
+        'title': '测试',
+        'dt_start': +new Date() / 1000 + 60, //开始时间
+        'dt_end': +new Date() / 1000 + 160, //结束时间 (安卓可能无此参数，也可以不设置)
+        'des': '描述',
+        'alarm_list': [-5],
+        'url': 'http://www.baidu.com'
+    }
+
+    function bridgeReady(opts) {
+        if (!opts) {
+            return;
+        }
+        alert(1);
+        window.WeiboJSBridge.invoke("Calendars", opts, function(params, success, code) {});
+    }
+    if (window.WeiboJSBridge) {
+        bridgeReady(opts);
+    } else {
+        document.addEventListener('WeiboJSBridgeReady',
+            function() {
+                bridgeReady(opts);
+            });
+    }*/
+
+    var UA = navigator.userAgent;
+
+    var test = function() {
+        if (window.WeiboJSBridge) {
+            bridgeReady();
+        } else {
+            document.addEventListener('WeiboJSBridgeReady',
+                function() {
+                    bridgeReady();
+                });
+        }
+    }
+
+    function bridgeReady() {
+        console.log(WeiboJSBridge.STATUS_CODE);
+        window.WeiboJSBridge.invoke("Calendars", {
+            title: '112312',
+            dt_start: '1568199439',
+            des: 'dfdfd',
+            alarm_list: [-26, -50, -100],
+            'url': 'sinaweibo://cardlist?containerid=100165_-_travel2019_-_index'
+        }, function(params, success, code) {
+            if (success) {
+                alert('成功');
+            } else {
+                alert(success);
+                alert(code);
+            }
+        });
+
+
+    }
+</script>
+
+</html>

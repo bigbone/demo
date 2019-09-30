@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div>
+        <canvas width="300px" height="300px" id="canvas"></canvas>
+        <p>drawImage 不包含在里面</p>
+    </div>
+</body>
+<script type="text/javascript">
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var img = new Image();
+    img.onload = function() {
+        context.arc(120, 120, 80, 0, Math.PI * 2);
+        context.rect(0, 0, 100, 100);
+
+        //context.drawImage(img, 0, 0, 100, 100);
+
+        context.lineWidth = 5;
+        context.stroke();
+        // 用来测试的点坐标们
+        var arrPoints = [{
+            x: 40,
+            y: 40
+        }, point2 = {
+            x: 120,
+            y: 180
+        }, point3 = {
+            x: 120,
+            y: 38
+        }, {
+            x: 100,
+            y: 100
+        }];
+        context.beginPath();
+        context.moveTo(50, 50);
+        context.arcTo(150, 100, 200, 40, 40);
+        context.lineTo(200, 40);
+        context.stroke();
+
+        arrPoints.forEach(function(point) {
+            // 检测点是否在路径内
+            point.isPointInStroke = context.isPointInStroke(point.x, point.y);
+        });
+        arrPoints.forEach(function(point) {
+            // 标记这几个点
+            context.fillStyle = 'red';
+            context.beginPath();
+            context.arc(point.x, point.y, 3, 0, Math.PI * 2);
+            context.fill();
+            // 检测结果以文本方式绘制
+            context.font = '14px arial';
+            context.fillText(point.isPointInStroke, point.x + 5, point.y);
+        });
+    }
+    img.src = 'bright.jpg';
+</script>

@@ -1,0 +1,138 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        #redP p {
+            /* 权值 = 100+1=101 */
+            color: #F00;
+            border: 1px solid #cccc;
+            /* 红色 */
+        }
+        
+        #redP .red em {
+            /* 权值 = 100+10+1=111 */
+            color: #00F;
+            /* 蓝色 */
+        }
+        
+        #redP p span em {
+            /* 权值 = 100+1+1+1=103 */
+            color: #FF0;
+            /*黄色*/
+        }
+        
+        .warn {
+            color: rgb(223, 223, 162);
+        }
+        
+        .notice {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <p><input type="checkbox" id="status">注意(尽量少用))</p>
+    <img src="css.png">
+    <p>1. !important 10000</p>
+
+    <p>2. 内联样式表的权值最高 1000</p>
+
+    <p>3. ID 选择器的权值为 100</p>
+
+    <p>4. Class 类选择器的权值为 10</p>
+
+    <p>5. HTML 标签选择器的权值为 1</p>
+    <p>6. 子节点会继承父节点的样式</p>
+
+
+    <div id="redP">
+        <p class="red">red
+            <span><em>em red</em></span>
+            <span style="color:green;">red</span>
+        </p>
+        <p>red</p>
+    </div>
+    <script>
+        var st = document.getElementById('status');
+        st.addEventListener('click', function() {
+            var ischeck = st.checked;
+            var ps = document.getElementsByTagName('p');
+            var length = ps.length;
+            for (var i = 0; i < length; i++) {
+                if (i > 3) {
+                    break;
+                }
+                if (ischeck) {
+                    ps[i].classList.add(i > 2 ? 'warn' : 'notice');
+                } else {
+                    ps[i].classList.remove(i > 2 ? 'warn' : 'notice');
+                }
+            }
+        });
+    </script>
+
+    <div>
+        <p>盒模型</p>
+        <img src="https://lc-gold-cdn.xitu.io/b80801d8707be24ecbc0?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">
+        <p>css基本布局(<a href="https://juejin.im/post/5bbcd7ff5188255c80668028">链接</a>))</p>
+        <p>BFC(Block formatting context)直译为"块级格式化上下文"(<a href="https://juejin.im/post/5909db2fda2f60005d2093db">链接</a>)</p>
+        <p>响应式布局(<a href="https://juejin.im/post/5caaa230e51d452b672f9703#heading-6">链接</a>)和rem</p>
+        <p>Flex（<a href="https://www.zhangxinxu.com/wordpress/2018/10/display-flex-css3-css/">链接</a>）</p>
+        <div>
+            <code>
+
+                    /* ipad */
+                    @media screen and (max-width: 768px) {
+                        aside {
+                          float: none;
+                          width: 100%;
+                          height: 10%;
+                          background-color: green;
+                        }
+                        main {
+                          height: calc(100vh - 10%);
+                          background-color: red;
+                        }
+                    }
+                    /* iphone6 7 8 plus */
+                    @media screen and (max-width: 414px) {
+                        aside {
+                          float: none;
+                          width: 100%;
+                          height: 5%;
+                          background-color: yellow;
+                        }
+                        main {
+                          height: calc(100vh - 5%);
+                          background-color: red;
+                        }
+                    }
+                    /* iphoneX */
+                    @media screen and (max-width: 375px) and (-webkit-device-pixel-ratio: 3) {
+                        aside {
+                          float: none;
+                          width: 100%;
+                          height: 10%;
+                          background-color: blue;
+                        }
+                        main {
+                          height: calc(100vh - 10%);
+                          background-color: red;
+                        }
+                    }
+            </code>
+        </div>
+    </div>
+
+    <h3>渲染</h3>
+    <img src="htmltree.png">
+    <p>重绘</p>
+    <p>重排</p>
+    <p>transform</p>
+    <p><a href="cssani.html">css动画</a></p>
+    <p>requestAnimationFrame <a href='requestAni.html'>例子</a></p>
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div>
+        <canvas width="300px" height="300px" id="canvas"></canvas>
+        <img src="" id="imgend" />
+    </div>
+</body>
+<script type="text/javascript">
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    context.arc(120, 120, 80, 0, Math.PI * 2);
+    context.stroke();
+    // 用来测试的点坐标们
+    var arrPoints = [{
+        x: 50,
+        y: 50
+    }, point2 = {
+        x: 150,
+        y: 150
+    }, point3 = {
+        x: 120,
+        y: 40
+    }, point4 = {
+        x: 150,
+        y: 90
+    }];
+    arrPoints.forEach(function(point) {
+        // 检测点是否在路径内
+        point.isPointInPath = context.isPointInPath(point.x, point.y);
+    });
+    arrPoints.forEach(function(point) {
+        // 标记这几个点
+        context.fillStyle = 'red';
+        context.beginPath();
+        context.arc(point.x, point.y, 3, 0, Math.PI * 2);
+        context.fill();
+        // 检测结果以文本方式绘制
+        context.font = '14px arial';
+        context.fillText(point.isPointInPath, point.x + 5, point.y);
+    });
+</script>
+
+</html>

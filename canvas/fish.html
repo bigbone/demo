@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,minimal-ui">
+
+    <style>
+        .wrap {
+            position: static;
+        }
+        
+        .canvas {
+            border: 1px solid #cccccc;
+            width: 100%;
+            /*background: url('test.png') repeat-y fixed;*/
+        }
+        
+        .btn {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <p><a href="javascript:void(0);" id="clear" class="btn">clear</a>
+            <label>粗度</label><input type="range" id="range" max='30' min="5" value="8" step="1">
+        </p>
+        <p><label>颜色</label><input type="color" id="color" value="#ff5524"></p>
+        <div class="canvas">
+            <canvas id="canvas"></canvas>
+
+        </div>
+
+    </div>
+</body>
+<script>
+    var coverImg = new Image();
+    coverImg.src = 'bright.jpg';
+    var canvas = document.getElementById('canvas');
+    canvas.width = document.body.offsetWidth;
+    canvas.height = document.body.offsetWidth;
+    var ctx = canvas.getContext('2d');
+    ctx.strokeStyle = " #ff5524 ";
+    ctx.lineCap = "round ";
+    ctx.lineJoin = "round ";
+    ctx.lineWidth = 8;
+    coverImg.onload = function() {
+        //ctx.drawImage(coverImg, 0, 0);
+        //ctx.globalCompositeOperation = 'destination-out';
+    }
+
+
+
+    var startx, starty;
+    var func = {
+        'touchstart': function(e) {
+            var linewidht = document.getElementById('range').value;
+            ctx.lineWidth = linewidht;
+            var color = document.getElementById('color').value;
+            ctx.strokeStyle = color;
+            var X = e.touches[0].pageX - this.getBoundingClientRect().left;
+            var Y = e.touches[0].pageY - this.getBoundingClientRect().top;
+            ctx.beginPath();
+            startx = X;
+            starty = Y;
+            ctx.moveTo(X, Y);
+        },
+        'touchmove': function(e) {
+            var X = e.touches[0].pageX - this.getBoundingClientRect().left;
+            var Y = e.touches[0].pageY - this.getBoundingClientRect().top;
+            e.preventDefault();
+            ctx.quadraticCurveTo(startx, starty, X, Y);
+            //ctx.arc(startx, starty, 20, 0, Math.PI * 2)
+            startx = X;
+            starty = Y;
+            ctx.stroke();
+        },
+        'touchend': function() {
+            ctx.closePath();
+            console.log(func.getCanvasData());
+        },
+        'getCanvasData': function() {
+            var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            // 存储当前cavnas画布的全部像素点信息
+            var pixels = imgData.data;
+            // 存储当前canvas画布的透明像素信息
+            var transPixels = [];
+            // 遍历全部像素点信息
+            for (var i = 0; i < pixels.length; i += 4) {
+                // 把透明的像素点添加到transPixels里
+                if (pixels[i + 3] < 128) {
+                    transPixels.push(pixels[i + 3]);
+                }
+
+            }
+            return (transPixels.length / (imgData.data.length / 4) * 100).toFixed(2);
+        }
+    };
+    canvas.addEventListener('touchstart', func.touchstart, false);
+    canvas.addEventListener('touchmove', func.touchmove, false);
+    canvas.addEventListener('touchend', func.touchend, false);
+
+    var clear = function() {
+        ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    }
+    document.getElementById('clear').addEventListener('click', clear, false);
+</script>
+
+</html>

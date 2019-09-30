@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <h2>事件Event</h2>
+
+    <h3>dom1</h3>
+    <div>
+        <h3>绑定事件方法</h3>
+        <p onclick="console.log('dom.click')">1.onclick="func()"</p>
+        <p id="testclick">2.dom.click</p>
+        <p id="testclick2">3.dom.addEventListener/dom.attachevent</p>
+        <script>
+            document.getElementById('testclick').onclick = function() {
+                alert(11)
+            }
+            var testdom2 = document.getElementById('testclick2');
+            testdom2.addEventListener('click', function() {
+                console.log(1);
+            }, false);
+            testdom2.addEventListener('click', function() {
+                console.log(2);
+            }, false);
+        </script>
+    </div>
+    <p>很古老</p>
+    <h3>dom2</h3>
+    <p>键盘事件 keydown/keyup/keypress</p>
+    <div>
+        <span><input type="text" id="input1"> </span>
+    </div>
+    <script type="text/javascript">
+        document.getElementById('input1').addEventListener('keyup', function(e) {
+            console.log(e, 'keyup');
+        });
+        document.getElementById('input1').addEventListener('keypress', function(e) {
+            console.log('keypress');
+        });
+        document.getElementById('input1').addEventListener('keydown', function(e) {
+            console.log('keydown');
+            console.log('按的键是[' + e.key + ']' + (e.keyCode));
+
+        });
+    </script>
+    <p>鼠标事件 mousedown/mousemove/mouseup/contextmenu/click</p>
+    <div style="width:400px;height:400px;border:1px solid red;" id="demo">
+        <p>dddddd</p>
+        <p>dddddd</p>
+        <p>@@@@@@</p>
+        <img src="ios.png">
+    </div>
+    <script type="text/javascript">
+        document.getElementById('demo').addEventListener('mouseover', function() {
+            console.log('我在上面');
+        });
+        document.getElementById('demo').addEventListener('mousemove', function() {
+            console.log('我在移动');
+        });
+        document.getElementById('demo').addEventListener('mouseleave', function() {
+            console.log('我出来了');
+        });
+    </script>
+    <p>其他事件 frocus/blur/input</p>
+    <div>
+        <input type="text" id="input2">
+        <script type="text/javascript">
+            document.getElementById('input2').addEventListener('frocus', function(e) {
+                console.log(e, 'frocus');
+            });
+            document.getElementById('input2').addEventListener('blur', function(e) {
+                console.log('blur');
+            });
+            document.getElementById('input2').addEventListener('input', function(e) {
+                console.log('input');
+                console.log(this.value);
+            });
+        </script>
+    </div>
+    <p>移动事件 touchstart/touchmove/touchend <a href="../../../canvas/fish.html">链接</a></p>
+
+
+    <h3>事件机制</h3>
+    <p>事件冒泡</p>
+    <img src="bubble.png">
+    <p>事件捕获</p>
+    <img src="addevent.png">
+    <p>所有事件</p>
+    <img src="end.png">
+    <p>事件代码代理<a href="addevent.html">链接</a></p>
+
+    <h3>自定义事件</h3>
+    <script type="text/javascript">
+        var custEvent = {
+            'ckey': '__cust__',
+            'add': function(obj, type, fn) {
+                //判断类型自己判断去。
+                if (typeof obj == 'string' || !type || typeof fn != 'function') {
+                    throw '自定义事件参数错误';
+                }
+                var eventList = obj[this.ckey];
+                if (!eventList) {
+                    obj[this.ckey] = {};
+                }
+                if (!obj[this.ckey][type]) {
+                    obj[this.ckey][type] = [];
+                }
+                obj[this.ckey][type].push(fn);
+            },
+            'remove': function(obj, type, fn) {
+                if (typeof obj == 'string' || !type) {
+                    throw '自定义事件参数错误';
+                }
+                var eventList = obj[this.ckey];
+                if (!eventList) {
+                    return;
+                }
+                eventList = eventList[type];
+                if (!eventList) {
+                    return;
+                }
+                var length = eventList.length;
+                for (var i = length - 1; i >= 0; i--) {
+                    if (eventList[i] === fn) {
+                        obj[this.ckey][type].splice(i, 1);
+                    }
+                }
+            },
+            'fire': function(obj, type, data) {
+                //判断类型自己判断去。
+                if (typeof obj == 'string' || !type) {
+                    throw '自定义事件参数错误';
+                }
+                var eventList = obj[this.ckey];
+                if (!eventList) {
+                    return;
+                }
+                eventList = eventList[type];
+                if (!eventList) {
+                    return;
+                }
+
+                var length = eventList.length;
+                for (var i = 0; i < length; i++) {
+                    try {
+                        eventList[i].apply(null, [{
+                            'type': type
+                        }, data]);
+
+                    } catch (e) {}
+                }
+            }
+        }
+        var cobj = {};
+        var func = function(evt, data) {
+            console.log(data);
+        }
+        custEvent.add(cobj, 'dffd', func);
+        custEvent.fire(cobj, 'dffd', {
+            'data': 2323
+        });
+        custEvent.remove(cobj, 'dffd', func);
+
+        custEvent.fire(cobj, 'dffd', {
+            'data': 2323
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+<html>
+
+<head></head>
+
+<body>
+    <script>
+        setTimeout(() => {
+            console.log(4)
+        }, 0);
+        new Promise((resolve) => {
+            console.log(1);
+            for (var i = 0; i < 10000000; i++) {
+                i === 9999999 && resolve();
+            }
+            console.log(2);
+        }).then(() => {
+            console.log(5);
+        });
+        console.log(3);
+    </script>
+    <script>
+        setTimeout(() => {
+            console.log(8)
+        }, 0);
+        console.log(9);
+        new Promise((resolve) => {
+            resolve()
+        }).then(() => {
+            console.log(10);
+        });
+    </script>
+    <script>
+        console.log(6)
+        new Promise((resolve) => {
+            resolve()
+        }).then(() => {
+            setTimeout(() => {
+                console.log(18)
+            }, 0);
+            console.log(7);
+        });
+    </script>
+</body>
+
+</html>

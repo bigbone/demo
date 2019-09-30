@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        #demo {
+            border: 1px solid red;
+            width: 100px;
+            height: 100px;
+            margin: 100px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="demo"></div>
+</body>
+<script type="text/javascript">
+    var rAF = window.requestAnimationFrame;
+
+    var degrees = 0;
+    var div = document.querySelector('#demo');
+
+    function update() {
+        div.style.transform = "rotate(" + degrees + "deg)";
+        //console.log('updated to degrees ' + degrees);
+        degrees = degrees + 1;
+        rAF(update);
+    }
+    rAF(update);
+</script>
+
+</html>

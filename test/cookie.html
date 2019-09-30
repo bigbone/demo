@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <meta name="apple-mobile-web-app-title" content="">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+</head>
+
+<body>
+    <input type="button" value="种cookie" onclick="setcookie()">
+    <input type="button" value="种locationstrong" onclick="setlocal()">
+    <div>
+        <p id="c"></p>
+        <p id="l"></p>
+    </div>
+</body>
+<script>
+    var that = {
+        /**
+         * 设置cookie
+         * @method set
+         * @param {String} sKey
+         * @param {String} sValue
+         * @param {String} oOpts
+            {
+                    'expire': {Number}, //过期时间
+                    'path': {String},   //路径，默认''
+                    'domain': {String}, //域
+                    'secure': {String}, //是否保护
+                    'encode': {Boolean} //是否编码
+            }
+         * @return {void}
+         * @example
+         */
+        set: function(sKey, sValue, oOpts) {
+            var arr = [];
+            var d, t;
+            var cfg = {
+                'expire': null,
+                'path': '/',
+                'domain': null,
+                'secure': null,
+                'encode': true
+            };
+            if (oOpts.expire) {
+                cfg.expire = oOpts.expire;
+            }
+
+            if (cfg.encode == true) {
+                sValue = escape(sValue);
+            }
+            arr.push(sKey + '=' + sValue);
+
+            if (cfg.path != null) {
+                arr.push('path=' + cfg.path);
+            }
+            if (cfg.domain != null) {
+                arr.push('domain=' + cfg.domain);
+            }
+            if (cfg.secure != null) {
+                arr.push(cfg.secure);
+            }
+            if (cfg.expire != null) {
+                d = new Date();
+                t = d.getTime() + cfg.expire * 3600000;
+                d.setTime(t);
+                arr.push('expires=' + d.toGMTString());
+            }
+            document.cookie = arr.join(';');
+        },
+        /**
+         * Describe 获取cookie
+         * @method get
+         * @param {String} sKey
+         * @return {String}
+         * @example
+         */
+        get: function(sKey) {
+            sKey = sKey.replace(/([.[]$])/g, '\$1');
+            var rep = new RegExp(sKey + '=([^;]*)?;', 'i');
+            var co = document.cookie + ';';
+            var res = co.match(rep);
+            if (res) {
+                return res[1] || "";
+            } else {
+                return '';
+            }
+        },
+        /**
+         * Describe 删除cookie
+         * @method remove
+         * @param {String} sKey
+         * @return {void}
+         * @example
+         */
+        remove: function(sKey, oOpts) {
+            oOpts = oOpts || {};
+            oOpts.expire = -10;
+            that.set(sKey, '', oOpts);
+        }
+    };
+
+    var objDS = window.localStorage;
+    if (objDS) {
+        var ttt = {
+            /**
+             * Describe 获取值
+             * @method get
+             * @param {String} key
+                 
+             * @return {String}
+             * @example
+             */
+            get: function(key) {
+                return unescape(objDS.getItem(key));
+            },
+            /**
+             * Describe 设置值
+             * @method set
+             * @param {String} key
+             * @param {String} value
+             * @return {void}
+             * @example
+             */
+            set: function(key, value, exp) {
+                objDS.setItem(key, escape(value));
+            },
+            /**
+             * Describe 删除值
+             * @method  del
+             * @param {String} key
+             * @return {void}
+             * @example
+             */
+            del: function(key) {
+                objDS.removeItem(key);
+            },
+            clear: function() {
+                objDS.clear();
+            },
+            getAll: function() {
+                var l = objDS.length,
+                    key = null,
+                    ac = [];
+                for (var i = 0; i < l; i++) {
+                    key = objDS.key(i);
+                    ac.push(key + '=' + this.getKey(key));
+                }
+                return ac.join('; ');
+            }
+        };
+    }
+
+    function setcookie() {
+        that.set('cutomer', 'test', {
+            'expire': 10
+        });
+        alert(that.get('cutomer'));
+    }
+
+    function setlocal() {
+        ttt.set('cutomer', 'test2');
+        alert(ttt.get('cutomer'));
+    }
+    document.getElementById('c').innerHTML = 'cookie为' + that.get('cutomer');
+    document.getElementById('l').innerHTML = 'cookie为' + ttt.get('cutomer');
+</script>
+
+</html>

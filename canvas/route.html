@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div>
+        <canvas width="300px" height="300px" id="canvas">
+                <button id="button1">按钮1</button>
+                <button id="button2">按钮2</button>
+        </canvas>
+    </div>
+</body>
+<script type="text/javascript">
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+
+    async function loadmimg(path) {
+        return new Promise((resolve) => {
+            var img = new Image();
+            //img.crossOrigin = 'Anonymous';
+            img.onload = function() {
+                resolve(img);
+            }
+            img.src = path
+        });
+    }
+    async function draw() {
+        var img = await loadmimg('wz.jpeg');
+        console.log(img);
+        // 坐标位移
+        context.translate(150, 100);
+        // 旋转45度
+        context.rotate(45 * Math.PI / 180);
+        // 再位移回来
+        context.translate(-110, -100);
+        // 此时绘制图片就是中心旋转了
+        context.drawImage(img, 0, 0, 300, 200);
+        // 坐标系还原
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.rotate(-45 * Math.PI / 180);
+        context.scale(2, 2);
+        context.fillText('小黑胖子', 50, 100);
+        context.setTransform(1, 0, 0, 1, 0, 0);
+    }
+    draw();
+</script>
+
+</html>
