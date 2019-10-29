@@ -4,6 +4,7 @@
     <meta charset="utf-8">
 
     <body>
+
     </body>
     <script>
         //单例。不能new
@@ -18,6 +19,10 @@
         }
         console.log('改变前', sign.proa, sign.fun1());
         console.log('改变后', sign.proa, sign.fun1());
+
+        (function($) {
+            console.log($.fun1());
+        })(sign);
 
         //直观，费内存
         var obj = function(a) {
@@ -54,13 +59,17 @@
         p.prototype.fun1 = function() {
             console.log(this.name);
         }
+        p.prototype.testpro = 'test';
+        console.log('--------------');
 
         var child = function() {
                 this.name = '2222';
                 this.sonProperty = false;
+                //this.testpro = 'inchild';
             }
             //child.prototype被重写,导致child.prototype.constructor也一同被重写
         child.prototype = new p();
+        //child.prototype.testpro = 'inchildpro';
         child.prototype.name = '1';
 
         child.prototype.fun1 = function() {
@@ -83,4 +92,46 @@
         var s = new p();
         console.log(s.name, s.name1, s.sonProperty, s.name1);
         s.fun1();
+
+        var grap = function() {
+            this.test = 1;
+            //this.testpro = 'ingrap';
+        }
+        console.log('--------------');
+        grap.prototype = new child();
+
+        grap.prototype.aaa = function() {
+            console.log(this.sex, this.testpro);
+        }
+
+        var g = new grap();
+        console.log(g.testpro);
+        g.aaa();
+        console.log(grap.prototype.testpro);
+
+
+        (function(window) {
+            // jQuery 变量，用闭包避免环境污染
+            var jQuery = (function() {
+                var jQuery = function(selector, context) {
+                    return new jQuery.fn.init(selector, context, rootjQuery);
+                };
+
+                // 一些变量声明
+
+                jQuery.fn = jQuery.prototype = {
+                    constructor: jQuery,
+                    init: function(selector, context, rootjQuery) {}
+
+                    // 原型方法
+                };
+
+                jQuery.fn.init.prototype = jQuery.fn;
+
+
+                return jQuery;
+            })();
+
+            window.jQuery = window.$ = jQuery;
+        })(window);
     </script>

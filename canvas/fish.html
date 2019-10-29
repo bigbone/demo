@@ -107,7 +107,7 @@
             return (transPixels.length / (imgData.data.length / 4) * 100).toFixed(2);
         }
     };
-    var ismoblie = navigator.userAgent.indexOf('android') != -1 || navigator.userAgent.indexOf('ios') != -1;
+    var ismoblie = navigator.userAgent.indexOf('android') != -1 || navigator.userAgent.indexOf('iPhone') != -1;
     if (ismoblie) {
         canvas.addEventListener('touchstart', func.touchstart, false);
         canvas.addEventListener('touchmove', func.touchmove, false);

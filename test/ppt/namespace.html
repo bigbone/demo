@@ -5,24 +5,44 @@
 </head>
 
 <body>
-    <h3>如何做模块化</h3>
-    <p>1.自己开发工具打包。</p>
-    <p>2.CMD/AMD <a href="https://juejin.im/post/5aaa37c8f265da23945f365c">链接</a></p>
+    <h2>如何做模块化</h2>
+
+    <h3>1.自己开发工具打包。</h3>
+    <p><a href="http://git.intra.weibo.com/guoqing5/headmaster">headermaster</a></p>
+    <p>1.http 服务</p>
+    <p>2.代码合并工具</p>
+    <p><a href="headmaster.pdf">3.文档</a></p>
+
+    <h3>2.CMD/AMD <a href="https://juejin.im/post/5aaa37c8f265da23945f365c">链接</a></h3>
 
     <h3>3.gulp</h3>
-    <p><a href="https://github.com/browserify/browser-pack/blob/master/prelude.js">browserify</a></p>
     <p><a href="http://git.intra.weibo.com/huodong/js_brandevent/blob/master/js/gulpfile.js">gulp</a></p>
     <p><img src="gulp.png"></p>
+    <p><a href="https://github.com/browserify/browser-pack/blob/master/prelude.js">browserify</a></p>
 
 
-    <p><a href="https://ryerh.com/javascript/2016/03/27/babel-module-implementation.html">4.ES6</a></p>
-    <p>解构</p>
+    <h3><a href="https://ryerh.com/javascript/2016/03/27/babel-module-implementation.html">4.ES6</a></h3>
+    <p>import/export default</p>
+    <pre>
+      import Vue from './instance/index'
+      import { initGlobalAPI } from './global-api/index'
+      initGlobalAPI(Vue)
+      export default Vue
+    </pre>
     <p>babel</p>
     <p>webpack</p>
 
-    <h3>nodejs</h3>
-    <h3><a href="http://git.intra.weibo.com/guoqing5/headmaster">headermaster</a></h3>
+    <h3>模块设计原则</h3>
+    <p>1.功能单一</p>
+    <p>2.差异配置选项</p>
+    <p>3.回调/事件通讯</p>
+
+    <h3>上线流程</h3>
+    <p>新scm需要申请新的上线模块<a href="scm.pdf">详细设置</a></p>
+    <p>提交代码。dest/src都需要提交（node_moudel除外）</p>
+    <p>如果有需要动态编译的话，scm会多一个编译过程，否则不需要提供</p>
 
 </body>
+<script type="text/javascript" src="//js.t.sinajs.cn/t5/brandevent/js/dest/test/index.js"></script>
 
 </html>
