@@ -1,0 +1,437 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,minimal-ui">
+
+    <style>
+        div {
+            padding: 0;
+            margin: 0;
+        }
+        
+        .swiper-container {
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            overflow: hidden;
+            list-style: none;
+            padding: 0;
+            z-index: 1
+        }
+        
+        .swiper-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            display: flex;
+            transition-property: transform;
+            box-sizing: content-box
+        }
+        
+        .swiper-slide {
+            flex-shrink: 0;
+            width: 100vw;
+            height: 100%;
+            position: relative;
+            transition-property: transform;
+            font-size: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="swiper-container" id="swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background:red;">Slide 1</div>
+            <div class="swiper-slide" style="background:green;">Slide 2</div>
+            <div class="swiper-slide" style="background:yellow;">Slide 3</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    var Swiper = function(dom, opts) {
+        var _opts = opts || {};
+        _opts.loop = 1;
+        _opts.trantime = 1000;
+
+
+        var ismoblie = navigator.userAgent.indexOf('android') != -1 || navigator.userAgent.indexOf('iPhone') != -1;
+        var ismoving = false;
+        var warpdom = dom.querySelector('.swiper-wrapper');
+        var starpox;
+        var startpos;
+        var _this = this;
+        var screenw = window.screen.width;
+        if (!dom || !warpdom) {
+            console.warn('缺少必须的节点');
+            return;
+        }
+
+        var transitionEnd = (function() {
+            var transEndEventNames = {
+                WebkitTransition: 'webkitTransitionEnd',
+                MozTransition: 'transitionend',
+                OTransition: 'oTransitionEnd otransitionend',
+                transition: 'transitionend'
+            }
+            var body = document.body || document.documentElement,
+                style = body.style;
+            for (var name in transEndEventNames) {
+                if (typeof style[name] === "string") {
+                    return transEndEventNames[name];
+                }
+            }
+        })();
+
+        _this.eventsListeners = {};
+
+
+
+        _this.on = function(events, handler, priority) {
+            const _this = this;
+            if (typeof handler !== 'function') return _this;
+            const method = priority ? 'unshift' : 'push';
+            events.split(' ').forEach((event) => {
+                if (!_this.eventsListeners[event]) _this.eventsListeners[event] = [];
+                _this.eventsListeners[event][method](handler);
+            });
+            return _this;
+        }
+
+        _this.once = function(events, handler, priority) {
+            const _this = this;
+            if (typeof handler !== 'function') return _this;
+
+            function onceHandler(...args) {
+                handler.apply(_this, args);
+                _this.off(events, onceHandler);
+            }
+            return _this.on(events, onceHandler, priority);
+        }
+
+        _this.off = function(events, handler) {
+            const _this = this;
+            if (!_this.eventsListeners) return _this;
+            events.split(' ').forEach((event) => {
+                if (typeof handler === 'undefined') {
+                    _this.eventsListeners[event] = [];
+                } else if (_this.eventsListeners[event] && _this.eventsListeners[event].length) {
+                    _this.eventsListeners[event].forEach((eventHandler, index) => {
+                        if (eventHandler === handler) {
+                            _this.eventsListeners[event].splice(index, 1);
+                        }
+                    });
+                }
+            });
+            return _this;
+        }
+
+        _this.emit = function(...args) {
+            const _this = this;
+            if (!_this.eventsListeners) return _this;
+            let events;
+            let data;
+            let context;
+            if (typeof args[0] === 'string' || Array.isArray(args[0])) {
+                events = args[0];
+                data = args.slice(1, args.length);
+                context = _this;
+            } else {
+                events = args[0].events;
+                data = args[0].data;
+                context = args[0].context || _this;
+            }
+            const eventsArray = Array.isArray(events) ? events : events.split(' ');
+            eventsArray.forEach((event) => {
+                if (_this.eventsListeners && _this.eventsListeners[event]) {
+                    const handlers = [];
+                    _this.eventsListeners[event].forEach((eventHandler) => {
+                        handlers.push(eventHandler);
+                    });
+                    handlers.forEach((eventHandler) => {
+                        eventHandler.apply(context, data);
+                    });
+                }
+            });
+            return _this;
+        }
+
+        var transfrom = {
+            'getTransform': function() {
+                var tf = warpdom.style.transform;
+                var reg = tf.match(/translate3d\((.*?)\)/);
+                var res = reg && reg[1].split(',');
+                var num = res[0];
+                if (num) {
+                    num = parseInt(num.replace('px', ''));
+                }
+                return num;
+            },
+            'setTransfrom': function(x, timer) {
+                warpdom.style.transitionDuration = timer + 'ms';
+                warpdom.style.transform = 'translate3d(' + x + 'px, 0px, 0px)';
+            }
+        }
+
+        var evtfun = {
+            'start': function(e) {
+                ismoving = true;
+                _this.emit('swipermovestart', {
+                    'index': slide._curlindex
+                });
+                var event = ismoblie ? e.touches[0] : e;
+                starpox = event.pageX;
+                startpos = transfrom.getTransform();
+                warpdom.style.transitionDuration = '0ms';
+            },
+            'move': function(e) {
+                if (!ismoving) {
+                    return;
+                }
+                var event = ismoblie ? e.touches[0] : e;
+                var mx = event.pageX - starpox;
+                var offset = startpos + mx;
+                offset = Math.min(0, offset);
+                offset = Math.max(offset, -(slide._getslidesnum() - (_opts.loop ? 1 : 1)) * screenw);
+                transfrom.setTransfrom(offset, 0);
+                _this.emit('swipermove', {
+                    'index': slide._curlindex
+                });
+            },
+            'end': function(e) {
+                var event = ismoblie ? e.touches[0] : e;
+                var endx = transfrom.getTransform();
+                var cnum = Math.abs(endx) / screenw;
+                var cindex = Math.floor(cnum) + (cnum - Math.floor(cnum) > 0.4 ? 1 : 0);
+                transfrom.setTransfrom(-cindex * screenw, _opts.trantime);
+                slide.setCurlindex(cindex);
+                _this.emit('updateindex');
+            }
+        };
+
+        var util = {
+            'isString': function(o) {
+                return Object.prototype.toString.call(o) === '[object String]'
+            },
+            'isArray': function(o) {
+                return Object.prototype.toString.call(o) === '[object Array]';
+            },
+            'isnumber': function(o) {
+                return Object.prototype.toString.call(o) === '[object Number]';
+            },
+            'getfirstChild': function(dom) {
+                var fc = dom.firstChild;
+                while ((fc = fc.nextSibling) && fc.nodeType != 1) {}
+
+                if (fc.nodeType != 1) {
+                    fc = null;
+                }
+                return fc;
+            },
+            'getlastChild': function(dom) {
+                var lc = dom.lastChild;
+                while ((lc = lc.previousSibling) && lc.nodeType != 1) {}
+
+                if (lc.nodeType != 1) {
+                    lc = null;
+                }
+                return lc;
+            }
+        }
+
+        var slide = {
+            'getslides': function() {
+                return dom.querySelectorAll('.swiper-slide');
+            },
+            'appendsilde': function(sildearr, i) {
+                if (util.isArray(sildearr)) {
+                    var allength = slide.getslides().length;
+                    if (allength > 1) {
+                        if (i < 0 || i > allength - (_opts.loop ? 3 : 1)) {
+                            return;
+                        }
+                    }
+                    i = util.isnumber(i) ? i : 0;
+                    var length = sildearr.length;
+                    var isend = (i == allength - (_opts.loop ? 3 : 1));
+
+                    var insertdom = slide.getslides()[i + (_opts.loop ? 1 : 0)];
+                    sildearr.forEach(function(sildeitem) {
+                        if (allength == 0) {
+                            warpdom.insertAdjacentHTML('beforeend', sildeitem);
+                        } else {
+                            insertdom.insertAdjacentHTML('afterEnd', sildeitem);
+                            insertdom = insertdom.nextSibling;
+                        }
+
+                        if (slide._curlindex > i) {
+                            slide._curlindex++;
+                        }
+                    });
+                    slide._setslidecur(slide._curlindex, 1);
+                    if (_opts.loop) {
+                        //如果没有，算添加。需要创建
+                        if (allength == 0) {
+                            slide._createloopslide();
+                            transfrom.setTransfrom(-screenw, 0);
+                        } else {
+                            if (isend) {
+                                _this.emit('updateloopswiper');
+                            }
+                        }
+
+                    }
+                }
+            },
+            'removesilde': function(i) {
+                if (i < 0 || i > slide._getslidesnum() - (_opts.loop ? 2 : 1)) {
+                    return;
+                }
+                var allslides = slide.getslides();
+                var slideitem = allslides[i + (_opts.loop ? 1 : 0)];
+                slideitem && (slideitem.parentNode.removeChild(slideitem));
+                if (slide._curlindex >= i) {
+                    slide.setSlideIndex(Math.max(0, slide._curlindex--));
+                }
+                if (_opts.loop) {
+                    //如果循环，而且删除的是第一个需要更新第1个元素。
+                    if (allslides.length > 3 && (i == 0 || i == allslides.length - 2)) {
+                        console.log(122)
+                        _this.emit('updateloopswiper');
+                    } else if (allslides.length <= 3) {
+                        _this.emit('deleteallswiper');
+                    }
+                }
+
+            },
+            '_getslidesnum': function() {
+                return dom.querySelectorAll('.swiper-slide').length;
+            },
+            '_setslidecur': function(index, isdir) {
+                if (index < 0) {
+                    return;
+                }
+                var num = _opts.loop ? index + 1 : (index);
+                transfrom.setTransfrom(-num * screenw, (isdir ? 0 : _opts.trantime));
+            },
+            _curlindex: 0,
+            'setCurlindex': function(index) {
+                slide._curlindex = index;
+            },
+            'getCurlindex': function() {
+                return slide._curlindex;
+            },
+            'setSlideIndex': function(index) {
+                slide._curlindex = index;
+                slide._setslidecur(index);
+            }
+        }
+
+        var loop = {
+            'create': function() {
+                var doms = slide.getslides();
+                if (doms.length > 0) {
+                    var firstchid = doms[0].cloneNode(true);
+                    warpdom.append(firstchid);
+                    if (doms.length > 1) {
+                        var lastChild = doms[doms.length - 1].cloneNode(true);
+                        warpdom.insertBefore(lastChild, doms[0]);
+                    }
+                }
+            },
+            'update': function() {
+                var sildes = slide.getslides();
+                if (_opts.loop) {
+                    var length = sildes.length;
+                    var firstchid = sildes[1].cloneNode(true);
+                    var lastchild = sildes[length - 1];
+                    sildes[length - 1].parentNode.replaceChild(firstchid, lastchild);
+                    var lastdom = sildes[length - 2].cloneNode(true);
+                    sildes[0].parentNode.replaceChild(lastdom, sildes[0]);
+
+                }
+            },
+            'delete': function() {
+                var sildes = slide.getslides();
+                if (slides.length == 3) {
+                    var firstdom = sildes[0];
+                    var lastdom = sildes[2];
+                    firstdom && firstdom.parentNode.removeChild(firstdom);
+                    lastdom && lastdom.parentNode.removeChild(lastdom);
+                }
+            },
+            'addLoopevent': function() {
+                warpdom.addEventListener(transitionEnd, function() {
+                    _this.emit('updateindex');
+                });
+            }
+        }
+
+        var initevent = function() {
+            dom.addEventListener(ismoblie ? 'touchstart' : 'mousedown', evtfun.start);
+            dom.addEventListener(ismoblie ? 'touchmove' : 'mousemove', evtfun.move);
+            dom.addEventListener(ismoblie ? 'touchend' : 'mouseup', evtfun.end);
+            _this.on('updateloopswiper', function() {
+                loop.update();
+            });
+            _this.on('deleteswiper', function() {
+                loop.delete();
+            });
+            _this.on('updateindex', function() {
+                if (_opts.loop) {
+                    var num = transfrom.getTransform();
+                    var length = slide.getslides().length;
+                    if (num == 0) {
+                        transfrom.setTransfrom(-(length - 2) * screenw, 0);
+                        slide.setCurlindex(length - 2);
+                    } else if (Math.abs(num) >= (length - 1) * screenw) {
+                        transfrom.setTransfrom(-1 * screenw, 0);
+                        slide.setCurlindex(1);
+                    }
+                }
+                _this.emit('swipermovesend', {
+                    'index': slide._curlindex
+                });
+            });
+
+            if (!ismoblie) {
+                dom.addEventListener('mouseout', evtfun.end);
+            }
+        }
+
+        var init = function() {
+            if (_opts && _opts.on) {
+                Object.keys(_opts.on).forEach((eventName) => {
+                    _this.on(eventName, _opts.on[eventName]);
+                });
+            }
+
+            if (_opts.loop) {
+                loop.create();
+                transfrom.setTransfrom(-screenw, 0);
+                loop.addLoopevent();
+            } else {
+                transfrom.setTransfrom(0, 0);
+            }
+            if (slide.getslides().length > 1) {
+                initevent();
+            }
+
+            var keys = Object.keys(slide);
+            keys.forEach(function(key) {
+                if (key.indexOf('_') != 0) {
+                    _this[key] = slide[key];
+                }
+            });
+        }
+        init();
+    }
+    var ss = new Swiper(document.getElementById('swiper'));
+    //ss.removesilde(0);
+    ss.appendsilde(['<div class="swiper-slide" style="background:blue;">Slide 5</div>'], 2);
+</script>
+
+</html>

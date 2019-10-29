@@ -1,0 +1,56 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,minimal-ui">
+
+    <style>
+        div {
+            padding: 0;
+            margin: 0;
+        }
+        
+        .swiper-container {
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            overflow: hidden;
+            list-style: none;
+            padding: 0;
+            z-index: 1
+        }
+        
+        .swiper-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            display: flex;
+            transition-property: transform;
+            box-sizing: content-box
+        }
+        
+        .swiper-slide {
+            flex-shrink: 0;
+            width: 100vw;
+            height: 100%;
+            position: relative;
+            transition-property: transform;
+            font-size: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="swiper-container" id="swiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background:red;">Slide 1</div>
+            <div class="swiper-slide" style="background:green;">Slide 2</div>
+            <div class="swiper-slide" style="background:yellow;">Slide 3</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="//js.t.sinajs.cn/t5/brandevent/js/dest/tmall2019/test.js"></script>
+
+</html>
